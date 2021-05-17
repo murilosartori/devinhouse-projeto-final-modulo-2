@@ -43,7 +43,7 @@ Você está participando de um processo seletivo para ingressar numa vaga de pro
 - O media type de arquivo ultilizado no projeto deve ser o : "application/json";
 - Uso de testes unitários com no minímo de 80% de cobertura de código;
 - Uso de mapeamento de ojeto relacional usando a especificação JPA;
-- Uso do banco de dados PostgresSQL;
+- Uso do banco de dados PostgresSQL/H2;
 
 ## Considerações
 
