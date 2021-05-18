@@ -9,45 +9,48 @@ import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.service.ServicoDeProcessos;
 
 @RestController
+@RequestMapping(value = "/v1")
+@ResponseBody
 public class ProcessoController {
 
-  @Autowired
-  ServicoDeProcessos service;
-  // antigo: headers = "api-version=2021-04-21"
-  @ResponseStatus(code = HttpStatus.CREATED)
-  @PostMapping(path = "v1" + "/processo")
-  public Processo criaProcesso(@RequestBody Processo processo) {
-    return service.saveProcesso(processo);
-  }
+	@Autowired
+	ServicoDeProcessos service;
 
-  @ResponseStatus(code = HttpStatus.OK)
-  @GetMapping(path = "v1" + "/processos")
-  public Iterable<Processo> listaProcessos() {
-    return service.getProcessoHistory();
-  }
+	// antigo: headers = "api-version=2021-04-21"
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@PostMapping(path = "processo")
+	public Processo criaProcesso(@RequestBody Processo processo) {
+		return service.saveProcesso(processo);
+	}
 
-  @ResponseStatus(code = HttpStatus.OK)
-  @GetMapping(path = "v1" + "/processo/{id}")
-  public Processo buscaUmProcesso(@PathVariable("id") Long id) {
-    return service.buscaUmProcesso(id);
-  }
+	@ResponseStatus(code = HttpStatus.OK)
+	@GetMapping(path = "processos")
+	public Iterable<Processo> listaProcessos() {
+		return service.getProcessoHistory();
+	}
 
-  @ResponseStatus(code = HttpStatus.OK)
-  @GetMapping(path = "v1" + "/processo")
-  public Processo viewProcessoById(@RequestParam("chaveProcesso") String chaveProcesso) {
-    return service.buscaUmProcessoPorChave(chaveProcesso);
-  }
+	@ResponseStatus(code = HttpStatus.OK)
+	@GetMapping(path = "processo/{id}")
+	public Processo buscaUmProcesso(@PathVariable("id") Long id) {
+		return service.buscaUmProcesso(id);
+	}
 
-  @ResponseStatus(code = HttpStatus.NO_CONTENT)
-  @PutMapping(path = "v1" + "/processo/{id}")
-  public void atualizaProcesso(@RequestBody Processo processoAtualizado, @PathVariable("id") Long id) {
-    service.atualizaProcesso(processoAtualizado, id);
-  }
+	@ResponseStatus(code = HttpStatus.OK)
+	@GetMapping(path = "processo")
+	public Processo viewProcessoById(@RequestParam("chaveProcesso") String chaveProcesso) {
+		return service.buscaUmProcessoPorChave(chaveProcesso);
+	}
 
-  @ResponseStatus(code = HttpStatus.OK)
-  @DeleteMapping(path = "v1" + "/processo/{id}")
-  public Processo deletaProcesso(@PathVariable("id") Long id) {
-    return service.deletaProcesso(id);
-  }
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PutMapping(path = "processo/{id}")
+	public void atualizaProcesso(@RequestBody Processo processoAtualizado, @PathVariable("id") Long id) {
+		service.atualizaProcesso(processoAtualizado, id);
+	}
+
+	@ResponseStatus(code = HttpStatus.OK)
+	@DeleteMapping(path = "processo/{id}")
+	public Processo deletaProcesso(@PathVariable("id") Long id) {
+		return service.deletaProcesso(id);
+	}
 
 }
