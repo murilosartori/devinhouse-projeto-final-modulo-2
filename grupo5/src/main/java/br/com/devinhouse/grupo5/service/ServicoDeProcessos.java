@@ -7,67 +7,81 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import br.com.devinhouse.model.Processo;
-import br.com.devinhouse.repository.ProcessoRepository;
+import br.com.devinhouse.grupo5.model.Processo;
+import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 
 @Service
 public class ServicoDeProcessos {
-  
-  @Autowired
-  ProcessoRepository ProcessoRepository;
 
-  public ResponseEntity<String> saveProcesso(Processo Processo) {
-    HttpHeaders header = new HttpHeaders();
-    if (ProcessoRepository.existsById(Processo.getNuProcesso())) {
-      header.add("Mensagem:", "Numero de processo ja existe");
-      return new ResponseEntity<>(ServiceStatus.JSON(409, "Numero de processo ja existe."), header, HttpStatus.CONFLICT);
+  @Autowired
+  RepositorioDeProcessos processoRepository;
+
+  public Processo saveProcesso(Processo Processo) {
+    if (processoRepository.existsById(Processo.getNuProcesso())) {
+      // TODO: lançar um erro de negócio como throws CPFJaExisteException...
+      // ANTIGO: HttpHeaders header = new HttpHeaders();
+      // header.add("Mensagem:", "Numero de processo ja existe");
+      // return new ResponseEntity<>(ServiceStatus.JSON(409, "Numero de processo ja
+      // existe."), header, HttpStatus.CONFLICT);
     }
+    // TODO: retirar setChaveProcesso e repensar a construção da chave
     Processo.setChaveProcesso();
-    ProcessoRepository.save(Processo);
-    return new ResponseEntity<>(HttpStatus.CREATED);
+    processoRepository.save(Processo);
+    return Processo;
   }
 
   public Iterable<Processo> getProcessoHistory() {
-    return ProcessoRepository.findAll();
+    return processoRepository.findAll();
   }
 
-  public ResponseEntity<?> buscaUmProcesso(Long id) {
-    HttpHeaders header = new HttpHeaders();
-    if (!ProcessoRepository.findById(id).isPresent()) {
-      header.add("Mensagem:", "Processo nao encontrado");
-      return new ResponseEntity<String>(ServiceStatus.JSON(), header, HttpStatus.NOT_FOUND);
+  public Processo buscaUmProcesso(Long id) {
+    Optional<Processo> processo = processoRepository.findById(id);
+    if (processo.isEmpty()) {
+      // TODO: lançar um erro de negócio como throws ProcessoNaoEncontradoException...
+      // ANTIGO: HttpHeaders header = new HttpHeaders();
+      // header.add("Mensagem:", "Processo nao encontrado");
+      // return new ResponseEntity<String>(ServiceStatus.JSON(), header,
+      // HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<Optional<Processo>>(ProcessoRepository.findById(id), header, HttpStatus.OK);
+    return processo.get();
   }
 
-  public ResponseEntity<?> buscaUmProcessoPorChave(String chaveProcesso) {
-    HttpHeaders header = new HttpHeaders();
-    if (!ProcessoRepository.findByChaveProcesso(chaveProcesso).isPresent()) {
-      header.add("Mensagem:", "Processo nao encontrado");
-      return new ResponseEntity<>(ServiceStatus.JSON(), header, HttpStatus.NOT_FOUND);
+  public Processo buscaUmProcessoPorChave(String chaveProcesso) {
+    Optional<Processo> processo = processoRepository.findByChaveProcesso(chaveProcesso);
+    if (processo.isEmpty()) {
+      // TODO: lançar um erro de negócio como throws ProcessoNaoEncontradoException...
+      // ANTIGO: HttpHeaders header = new HttpHeaders();
+      // header.add("Mensagem:", "Processo nao encontrado");
+      // return new ResponseEntity<>(ServiceStatus.JSON(), header,
+      // HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<>(ProcessoRepository.findByChaveProcesso(chaveProcesso), header, HttpStatus.OK);
+    return processo.get();
   }
 
-  public ResponseEntity<?> atualizaProcesso(Processo processoAtualizado, Long id) {
-    HttpHeaders header = new HttpHeaders();
-    if (ProcessoRepository.existsById(id)) {
-      processoAtualizado.setChaveProcesso();
-      ProcessoRepository.save(processoAtualizado);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public void atualizaProcesso(Processo processoAtualizado, Long id) {
+    Optional<Processo> processo =  processoRepository.findById(id);
+    if (processo.isEmpty()) {
+      // TODO: lançar um erro de negócio como throws ProcessoNaoEncontradoException...
+      // HttpHeaders header = new HttpHeaders();
+      // processoAtualizado.setChaveProcesso();
+      // processoRepository.save(processoAtualizado);
+      // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    header.add("Mensagem:", "Processo nao encontrado");
-    return new ResponseEntity<>(ServiceStatus.JSON(), header, HttpStatus.NOT_FOUND);
+    /* TODO: Criar um DTO, extrair os dados alteráveis do processoAtualizado por no processo que consta no BD
+     */
+    processoRepository.save(processoAtualizado);
   }
 
-  public ResponseEntity<?> deletaProcesso(Long id) {
-    HttpHeaders header = new HttpHeaders();
-    if (ProcessoRepository.existsById(id)) {
-      ProcessoRepository.deleteById(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public Processo deletaProcesso(Long id) {
+    Optional<Processo> processo =  processoRepository.findById(id);
+    if (processo.isEmpty()) {
+      // TODO: lançar um erro de negócio como throws ProcessoNaoEncontradoException...
+      // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      // header.add("Mensagem:", "Processo nao encontrado");
     }
-    header.add("Mensagem:", "Processo nao encontrado");
-    return new ResponseEntity<>(ServiceStatus.JSON(), header, HttpStatus.NOT_FOUND);
+    processoRepository.deleteById(id);
+    return processo.get();
   }
 }

@@ -30,4 +30,8 @@ public class Processo {
   private String nmInteressado;
 	private String chaveProcesso; 
   
+  // TODO: retirar isso e repensar a forma de construção da chave de processo
+  public void setChaveProcesso() {
+    this.chaveProcesso = sgOrgaoProcesso + " " + nuProcesso + "/" + nuAnoProcesso;
+  }
 }
