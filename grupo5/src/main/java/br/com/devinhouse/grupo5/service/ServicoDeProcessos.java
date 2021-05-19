@@ -2,6 +2,9 @@ package br.com.devinhouse.grupo5.service;
 
 import java.util.Optional;
 
+import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
+import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,13 @@ import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 public class ServicoDeProcessos {
 
   @Autowired
+  ModelMapper modelMapper;
+
+  @Autowired
   RepositorioDeProcessos processoRepository;
 
-  public Processo saveProcesso(Processo Processo) {
-    if (processoRepository.existsById(Processo.getNuProcesso())) {
+  public ProcessoOutputDTO saveProcesso(ProcessoInputDTO processo) {
+    if (processoRepository.existsById(processo.getNuProcesso())) {
       throw new CpfJaExistenteException("Numero de processo ja existe");
       // ANTIGO: HttpHeaders header = new HttpHeaders();
       // header.add("Mensagem:", "Numero de processo ja existe");
@@ -25,16 +31,31 @@ public class ServicoDeProcessos {
       // existe."), header, HttpStatus.CONFLICT);
     }
     // TODO: retirar setChaveProcesso e repensar a construção da chave
-    Processo.setChaveProcesso();
-    processoRepository.save(Processo);
-    return Processo;
+    // processo.setChaveProcesso();
+
+//     processoRepository.save(modelMapper.map(processo, Processo.class));
+//    Processo processo1 = new Processo(
+//            processo.getNuProcesso(),
+//            processo.getSgOrgaoProcesso(),
+//            processo.getNuAnoProcesso(),
+//            processo.getDescricao(),
+//            Integer.parseInt(processo.getCdAssunto()),
+//            processo.getDescricaoAssunto(),
+//            processo.getCdInteressado(),
+//            processo.getNmInteressado()
+//    );
+
+    Processo processo1 = modelMapper.map(processo, Processo.class);
+    processoRepository.save(processo1);
+    System.out.println(processo);
+    return modelMapper.map(processo1, ProcessoOutputDTO.class);
   }
 
   public Iterable<Processo> getProcessoHistory() {
     return processoRepository.findAll();
   }
 
-  public Processo buscaUmProcesso(Long id) {
+  public ProcessoOutputDTO buscaUmProcesso(Long id) {
     Optional<Processo> processo = processoRepository.findById(id);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("Processo nao encontrado");
@@ -43,10 +64,10 @@ public class ServicoDeProcessos {
       // return new ResponseEntity<String>(ServiceStatus.JSON(), header,
       // HttpStatus.NOT_FOUND);
     }
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
-  public Processo buscaUmProcessoPorChave(String chaveProcesso) {
+  public ProcessoOutputDTO buscaUmProcessoPorChave(String chaveProcesso) {
     Optional<Processo> processo = processoRepository.findByChaveProcesso(chaveProcesso);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("Processo nao encontrado");
@@ -55,7 +76,7 @@ public class ServicoDeProcessos {
       // return new ResponseEntity<>(ServiceStatus.JSON(), header,
       // HttpStatus.NOT_FOUND);
     }
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
   public void atualizaProcesso(Processo processoAtualizado, Long id) {
@@ -72,7 +93,7 @@ public class ServicoDeProcessos {
     processoRepository.save(processoAtualizado);
   }
 
-  public Processo deletaProcesso(Long id) {
+  public ProcessoOutputDTO deletaProcesso(Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("Processo nao encontrado");
@@ -80,6 +101,6 @@ public class ServicoDeProcessos {
       // header.add("Mensagem:", "Processo nao encontrado");
     }
     processoRepository.deleteById(id);
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 }
