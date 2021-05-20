@@ -2,12 +2,15 @@ package br.com.devinhouse.grupo5.controllers;
 
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
+
 import org.aspectj.apache.bcel.classfile.Code;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.service.ServicoDeProcessos;
 
 import static org.springframework.http.HttpStatus.*;
@@ -20,7 +23,6 @@ public class ProcessoController {
 	@Autowired
 	ServicoDeProcessos service;
 
-	// antigo: headers = "api-version=2021-04-21"
 	@ResponseStatus(code = CREATED)
 	@PostMapping(path = "processo")
 	public ProcessoOutputDTO criaProcesso(@RequestBody ProcessoInputDTO processo) {
@@ -29,8 +31,8 @@ public class ProcessoController {
 
 	@ResponseStatus(code = OK)
 	@GetMapping(path = "processos")
-	public Iterable<Processo> listaProcessos() {
-		return service.getHistoricoProcesso();
+	public List<ProcessoOutputDTO> listaProcessos() {
+		return service.buscarTodosProcessos();
 	}
 
 	@ResponseStatus(code = OK)
@@ -47,7 +49,7 @@ public class ProcessoController {
 
 	@ResponseStatus(code = NO_CONTENT)
 	@PutMapping(path = "processo/{id}")
-	public void atualizaProcesso(@RequestBody Processo processoAtualizado, @PathVariable("id") Long id) {
+	public void atualizaProcesso(@RequestBody ProcessoInputDTO processoAtualizado, @PathVariable("id") Long id) {
 		service.atualizarProcesso(processoAtualizado, id);
 	}
 

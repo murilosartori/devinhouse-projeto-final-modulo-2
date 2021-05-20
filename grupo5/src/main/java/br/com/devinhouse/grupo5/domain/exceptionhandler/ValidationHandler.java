@@ -76,6 +76,15 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);
   }
 
+    //TODO:Exception e ExceptionHandler 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
+    //TODO:Exception e ExceptionHandler 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
+    //TODO:Exception e ExceptionHandler 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
+    //TODO:Exception e ExceptionHandler 5 - Não poderá ser cadastrado um novo processo com interessados inesistentes no sistema;
+    //TODO:Exception e ExceptionHandler 6 - Não poderá ser cadastrado um novo processo com assuntos inesistentes no sistema;
+    //TODO:Exception e ExceptionHandler 7 - Não poderá ser cadastrado um novo interessado com um id já existente;
+    //TODO:Exception e ExceptionHandler 8 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
+    //TODO:Exception e ExceptionHandler 9 - Não poderá ser cadastrado um novo interessado com um documento de identificação inválido;
+
   private Validation newValidation(String titulo, HttpStatus status) {
     var validation = new Validation();
     validation.setStatus(status.value());

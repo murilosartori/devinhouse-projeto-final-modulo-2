@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.sun.istack.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +26,10 @@ public class Assunto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotNull
-	@Column(length = 250)
+	@Column(length = 250, nullable = false)
 	private String descricao;
-	@NotNull
+  @Column(nullable = false)
 	private Date dtCadastro;
-	@NotNull
+	@Column(nullable = false)
 	private Boolean flAtivo;
 }
