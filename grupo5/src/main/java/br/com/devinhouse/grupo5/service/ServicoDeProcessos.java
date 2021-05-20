@@ -7,14 +7,16 @@ import br.com.devinhouse.grupo5.exceptions.ProcessoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.devinhouse.grupo5.domain.exceptions.CpfJaExistenteException;
+import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
 import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 
 @Service
 public class ServicoDeProcessos {
 
-  @Autowired
-  RepositorioDeProcessos processoRepository;
+	@Autowired
+	RepositorioDeProcessos processoRepository;
 
   public Processo salvarProcesso(Processo Processo) {
     if (processoRepository.existsById(Processo.getNuProcesso())) {
@@ -64,4 +66,5 @@ public class ServicoDeProcessos {
     processoRepository.deleteById(id);
     return processo.get();
   }
+  
 }
