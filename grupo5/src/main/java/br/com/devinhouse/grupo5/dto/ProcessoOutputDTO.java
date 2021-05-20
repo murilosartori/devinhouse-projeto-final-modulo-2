@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 public class ProcessoOutputDTO {
 
-    private Long nuProcesso;
+    private Integer nuProcesso;
     private String sgOrgaoProcesso;
     private String nuAnoProcesso;
     private String descricao;

@@ -3,22 +3,19 @@ package br.com.devinhouse.grupo5.service;
 import java.util.Optional;
 
 
+import br.com.devinhouse.grupo5.domain.exceptions.NuProcessoJaCadastradoException;
+import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
 import org.modelmapper.ModelMapper;
-import br.com.devinhouse.grupo5.exceptions.NuProcessoJaCadastradoException;
-import br.com.devinhouse.grupo5.exceptions.ProcessoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.devinhouse.grupo5.domain.exceptions.CpfJaExistenteException;
-import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
 import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 
 @Service
 public class ServicoDeProcessos {
-
 
   @Autowired
   ModelMapper modelMapper;
@@ -26,11 +23,10 @@ public class ServicoDeProcessos {
   @Autowired
   RepositorioDeProcessos processoRepository;
 
-  public ProcessoOutputDTO salvarProcesso(Processo Processo) {
-    if (processoRepository.existsById(Processo.getNuProcesso())) {
-      throw new NuProcessoJaCadastradoException("O número de processo informado já encontra-se cadastrado.");
+  public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processo) {
+    if (processoRepository.findByNuProcesso(processo.getNuProcesso()).isPresent()) {
+      throw new NuProcessoJaCadastradoException();
     }
-
     processoRepository.save(modelMapper.map(processo, Processo.class));
     return modelMapper.map(processo, ProcessoOutputDTO.class);
   }
@@ -44,7 +40,7 @@ public class ServicoDeProcessos {
 
     Optional<Processo> processo = processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
+      throw new ProcessoNaoEncontradoException();
     }
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
@@ -53,7 +49,7 @@ public class ServicoDeProcessos {
 
     Optional<Processo> processo = processoRepository.findByChaveProcesso(chaveProcesso);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
+      throw new ProcessoNaoEncontradoException();
     }
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
@@ -61,7 +57,7 @@ public class ServicoDeProcessos {
   public void atualizarProcesso(Processo processoAtualizado, Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
+      throw new ProcessoNaoEncontradoException();
     }
     /* TODO: Criar um DTO, extrair os dados alteráveis do processoAtualizado por no processo que consta no BD
      */
@@ -71,10 +67,10 @@ public class ServicoDeProcessos {
   public ProcessoOutputDTO deletarProcesso(Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
+      throw new ProcessoNaoEncontradoException();
     }
     processoRepository.deleteById(id);
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
-  
+
 }
