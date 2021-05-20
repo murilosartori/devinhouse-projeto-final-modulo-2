@@ -21,37 +21,37 @@ public class ProcessoController {
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping(path = "processo")
 	public ProcessoOutputDTO criaProcesso(@RequestBody ProcessoInputDTO processo) {
-		return service.saveProcesso(processo);
+		return service.salvarProcesso(processo);
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping(path = "processos")
 	public Iterable<Processo> listaProcessos() {
-		return service.getProcessoHistory();
+		return service.getHistoricoProcesso();
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping(path = "processo/{id}")
 	public ProcessoOutputDTO buscaUmProcesso(@PathVariable("id") Long id) {
-		return service.buscaUmProcesso(id);
+		return service.buscarUmProcesso(id);
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping(path = "processo")
-	public ProcessoOutputDTO viewProcessoById(@RequestParam("chaveProcesso") String chaveProcesso) {
-		return service.buscaUmProcessoPorChave(chaveProcesso);
+	public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("chaveProcesso") String chaveProcesso) {
+		return service.buscarUmProcessoPorChave(chaveProcesso);
 	}
 
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@PutMapping(path = "processo/{id}")
 	public void atualizaProcesso(@RequestBody Processo processoAtualizado, @PathVariable("id") Long id) {
-		service.atualizaProcesso(processoAtualizado, id);
+		service.atualizarProcesso(processoAtualizado, id);
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@DeleteMapping(path = "processo/{id}")
 	public ProcessoOutputDTO deletaProcesso(@PathVariable("id") Long id) {
-		return service.deletaProcesso(id);
+		return service.deletarProcesso(id);
 	}
 
 }

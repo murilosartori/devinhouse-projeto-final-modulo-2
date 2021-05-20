@@ -2,9 +2,12 @@ package br.com.devinhouse.grupo5.service;
 
 import java.util.Optional;
 
+
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
 import org.modelmapper.ModelMapper;
+import br.com.devinhouse.grupo5.exceptions.NuProcessoJaCadastradoException;
+import br.com.devinhouse.grupo5.exceptions.ProcessoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,71 +19,62 @@ import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 @Service
 public class ServicoDeProcessos {
 
+
   @Autowired
   ModelMapper modelMapper;
 
   @Autowired
   RepositorioDeProcessos processoRepository;
 
-  public ProcessoOutputDTO saveProcesso(ProcessoInputDTO processo) {
-    if (processoRepository.existsById(processo.getNuProcesso())) {
-      throw new CpfJaExistenteException("Numero de processo ja existe");
+  public ProcessoOutputDTO salvarProcesso(Processo Processo) {
+    if (processoRepository.existsById(Processo.getNuProcesso())) {
+      throw new NuProcessoJaCadastradoException("O número de processo informado já encontra-se cadastrado.");
     }
 
     processoRepository.save(modelMapper.map(processo, Processo.class));
     return modelMapper.map(processo, ProcessoOutputDTO.class);
   }
 
-  public Iterable<Processo> getProcessoHistory() {
+  public Iterable<Processo> getHistoricoProcesso() {
     return processoRepository.findAll();
   }
 
-  public ProcessoOutputDTO buscaUmProcesso(Long id) {
+
+  public ProcessoOutputDTO buscarUmProcesso(Long id) {
+
     Optional<Processo> processo = processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("Processo nao encontrado");
-      // ANTIGO: HttpHeaders header = new HttpHeaders();
-      // header.add("Mensagem:", "Processo nao encontrado");
-      // return new ResponseEntity<String>(ServiceStatus.JSON(), header,
-      // HttpStatus.NOT_FOUND);
+      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
-  public ProcessoOutputDTO buscaUmProcessoPorChave(String chaveProcesso) {
+  public ProcessoOutputDTO buscarUmProcessoPorChave(String chaveProcesso) {
+
     Optional<Processo> processo = processoRepository.findByChaveProcesso(chaveProcesso);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("Processo nao encontrado");
-      // ANTIGO: HttpHeaders header = new HttpHeaders();
-      // header.add("Mensagem:", "Processo nao encontrado");
-      // return new ResponseEntity<>(ServiceStatus.JSON(), header,
-      // HttpStatus.NOT_FOUND);
+      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
-  public void atualizaProcesso(Processo processoAtualizado, Long id) {
+  public void atualizarProcesso(Processo processoAtualizado, Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("Processo nao encontrado");
-      // HttpHeaders header = new HttpHeaders();
-      // processoAtualizado.setChaveProcesso();
-      // processoRepository.save(processoAtualizado);
-      // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
     /* TODO: Criar um DTO, extrair os dados alteráveis do processoAtualizado por no processo que consta no BD
      */
     processoRepository.save(processoAtualizado);
   }
 
-  public ProcessoOutputDTO deletaProcesso(Long id) {
+  public ProcessoOutputDTO deletarProcesso(Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
-      throw new ProcessoNaoEncontradoException("Processo nao encontrado");
-      // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      // header.add("Mensagem:", "Processo nao encontrado");
+      throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
     processoRepository.deleteById(id);
     return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
+  
 }
