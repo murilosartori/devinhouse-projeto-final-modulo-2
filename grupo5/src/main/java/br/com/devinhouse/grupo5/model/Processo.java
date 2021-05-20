@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import lombok.*;
 
 @Entity
-@Builder(toBuilder = true)
-@AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
@@ -48,4 +46,15 @@ public class Processo {
 	@ManyToOne
 	private Interessado cdInteressado;
 
+  @Builder(toBuilder = true)
+	public Processo(Integer nuProcesso, String sgOrgaoSetor, String nuAno, String descricao, Assunto cdAssunto,
+      Interessado cdInteressado) {
+    this.nuProcesso = nuProcesso;
+    this.sgOrgaoSetor = sgOrgaoSetor;
+    this.nuAno = nuAno;
+    this.descricao = descricao;
+    this.cdAssunto = cdAssunto;
+    this.cdInteressado = cdInteressado;
+    this.chaveProcesso = this.sgOrgaoSetor + " " + this.nuProcesso + "/" + this.nuAno;
+  }
 }
