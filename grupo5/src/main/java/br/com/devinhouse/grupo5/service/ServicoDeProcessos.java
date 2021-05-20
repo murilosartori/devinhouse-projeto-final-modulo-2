@@ -25,30 +25,10 @@ public class ServicoDeProcessos {
   public ProcessoOutputDTO saveProcesso(ProcessoInputDTO processo) {
     if (processoRepository.existsById(processo.getNuProcesso())) {
       throw new CpfJaExistenteException("Numero de processo ja existe");
-      // ANTIGO: HttpHeaders header = new HttpHeaders();
-      // header.add("Mensagem:", "Numero de processo ja existe");
-      // return new ResponseEntity<>(ServiceStatus.JSON(409, "Numero de processo ja
-      // existe."), header, HttpStatus.CONFLICT);
     }
-    // TODO: retirar setChaveProcesso e repensar a construção da chave
-    // processo.setChaveProcesso();
 
-//     processoRepository.save(modelMapper.map(processo, Processo.class));
-//    Processo processo1 = new Processo(
-//            processo.getNuProcesso(),
-//            processo.getSgOrgaoProcesso(),
-//            processo.getNuAnoProcesso(),
-//            processo.getDescricao(),
-//            Integer.parseInt(processo.getCdAssunto()),
-//            processo.getDescricaoAssunto(),
-//            processo.getCdInteressado(),
-//            processo.getNmInteressado()
-//    );
-
-    Processo processo1 = modelMapper.map(processo, Processo.class);
-    processoRepository.save(processo1);
-    System.out.println(processo);
-    return modelMapper.map(processo1, ProcessoOutputDTO.class);
+    processoRepository.save(modelMapper.map(processo, Processo.class));
+    return modelMapper.map(processo, ProcessoOutputDTO.class);
   }
 
   public Iterable<Processo> getProcessoHistory() {
