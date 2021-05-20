@@ -1,5 +1,7 @@
 package br.com.devinhouse.grupo5.controllers;
 
+import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
+import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class ProcessoController {
 	// antigo: headers = "api-version=2021-04-21"
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@PostMapping(path = "processo")
-	public Processo criaProcesso(@RequestBody Processo processo) {
+	public ProcessoOutputDTO criaProcesso(@RequestBody ProcessoInputDTO processo) {
 		return service.salvarProcesso(processo);
 	}
 
@@ -30,13 +32,13 @@ public class ProcessoController {
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping(path = "processo/{id}")
-	public Processo buscaUmProcesso(@PathVariable("id") Long id) {
+	public ProcessoOutputDTO buscaUmProcesso(@PathVariable("id") Long id) {
 		return service.buscarUmProcesso(id);
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping(path = "processo")
-	public Processo viewProcessoById(@RequestParam("chaveProcesso") String chaveProcesso) {
+	public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("chaveProcesso") String chaveProcesso) {
 		return service.buscarUmProcessoPorChave(chaveProcesso);
 	}
 
@@ -48,7 +50,7 @@ public class ProcessoController {
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@DeleteMapping(path = "processo/{id}")
-	public Processo deletaProcesso(@PathVariable("id") Long id) {
+	public ProcessoOutputDTO deletaProcesso(@PathVariable("id") Long id) {
 		return service.deletarProcesso(id);
 	}
 

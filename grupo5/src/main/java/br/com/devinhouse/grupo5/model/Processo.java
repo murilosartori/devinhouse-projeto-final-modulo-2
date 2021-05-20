@@ -9,13 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.sun.istack.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Builder(toBuilder = true)
@@ -23,7 +18,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "Processo")
+@ToString
+@Table(name = "Processos")
 public class Processo {
 
 	@Id
@@ -52,8 +48,4 @@ public class Processo {
 	@ManyToOne
 	private Interessado cdInteressado;
 
-	// TODO: retirar isso e repensar a forma de construção da chave de processo
-	public void setChaveProcesso() {
-		this.chaveProcesso = sgOrgaoSetor + " " + nuProcesso + "/" + nuAno;
-	}
 }

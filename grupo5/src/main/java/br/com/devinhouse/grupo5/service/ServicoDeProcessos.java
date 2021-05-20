@@ -2,6 +2,10 @@ package br.com.devinhouse.grupo5.service;
 
 import java.util.Optional;
 
+
+import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
+import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
+import org.modelmapper.ModelMapper;
 import br.com.devinhouse.grupo5.exceptions.NuProcessoJaCadastradoException;
 import br.com.devinhouse.grupo5.exceptions.ProcessoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,37 +19,43 @@ import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 @Service
 public class ServicoDeProcessos {
 
-	@Autowired
-	RepositorioDeProcessos processoRepository;
 
-  public Processo salvarProcesso(Processo Processo) {
+  @Autowired
+  ModelMapper modelMapper;
+
+  @Autowired
+  RepositorioDeProcessos processoRepository;
+
+  public ProcessoOutputDTO salvarProcesso(Processo Processo) {
     if (processoRepository.existsById(Processo.getNuProcesso())) {
       throw new NuProcessoJaCadastradoException("O número de processo informado já encontra-se cadastrado.");
     }
-    // TODO: retirar setChaveProcesso e repensar a construção da chave
-    Processo.setChaveProcesso();
-    processoRepository.save(Processo);
-    return Processo;
+
+    processoRepository.save(modelMapper.map(processo, Processo.class));
+    return modelMapper.map(processo, ProcessoOutputDTO.class);
   }
 
   public Iterable<Processo> getHistoricoProcesso() {
     return processoRepository.findAll();
   }
 
-  public Processo buscarUmProcesso(Long id) {
+
+  public ProcessoOutputDTO buscarUmProcesso(Long id) {
+
     Optional<Processo> processo = processoRepository.findById(id);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
-  public Processo buscarUmProcessoPorChave(String chaveProcesso) {
+  public ProcessoOutputDTO buscarUmProcessoPorChave(String chaveProcesso) {
+
     Optional<Processo> processo = processoRepository.findByChaveProcesso(chaveProcesso);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
 
   public void atualizarProcesso(Processo processoAtualizado, Long id) {
@@ -58,13 +68,13 @@ public class ServicoDeProcessos {
     processoRepository.save(processoAtualizado);
   }
 
-  public Processo deletarProcesso(Long id) {
+  public ProcessoOutputDTO deletarProcesso(Long id) {
     Optional<Processo> processo =  processoRepository.findById(id);
     if (processo.isEmpty()) {
       throw new ProcessoNaoEncontradoException("O processo pelo qual buscavas não foi encontrado");
     }
     processoRepository.deleteById(id);
-    return processo.get();
+    return modelMapper.map(processo.get(), ProcessoOutputDTO.class);
   }
   
 }
