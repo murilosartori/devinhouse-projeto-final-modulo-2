@@ -3,12 +3,10 @@ package br.com.devinhouse.grupo5.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
+import br.com.devinhouse.grupo5.domain.exceptions.CpfJaExistenteException;
+import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
 import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 
