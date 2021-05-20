@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 import lombok.*;
 
 @Entity
@@ -20,32 +19,27 @@ import lombok.*;
 @Table(name = "Processos")
 public class Processo {
 
-	@Id
+  @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotNull
+	@Column(nullable = false)
 	private Integer nuProcesso;
-	@NotNull
-	@Column(length = 4)
+	@Column(length = 4, nullable = false)
 	private String sgOrgaoSetor;
-	@NotNull
-	@Column(length = 4)
+	@Column(length = 4, nullable = false)
 	private String nuAno;
-	@NotNull
-	@Column(length = 45)
+	@Column(length = 45, nullable = false)
 	private String chaveProcesso;
-	@NotNull
-	@Column(length = 250)
+	@Column(length = 250, nullable = false)
 	private String descricao;
-	@NotNull
-	@JoinColumn(name = "Assunto_idAssunto", referencedColumnName = "id")
+  //FIXME: Tirei temporariamente o impedimento à definição como nulo para testar a ferramenta
+	@JoinColumn(name = "Assunto_idAssunto_id", referencedColumnName = "id")
 	@ManyToOne
 	private Assunto cdAssunto;
-	@NotNull
-	@JoinColumn(name = "Interessado_idInteressado", referencedColumnName = "id")
+	@JoinColumn(name = "Interessado_idInteressado_id", referencedColumnName = "id")
 	@ManyToOne
 	private Interessado cdInteressado;
-
+  
   @Builder(toBuilder = true)
 	public Processo(Integer nuProcesso, String sgOrgaoSetor, String nuAno, String descricao, Assunto cdAssunto,
       Interessado cdInteressado) {
