@@ -9,14 +9,13 @@ import lombok.*;
 @ToString
 public class ProcessoOutputDTO {
 
-    private Long nuProcesso;
-    private String sgOrgaoProcesso;
-    private String nuAnoProcesso;
-    private String descricao;
-    private String cdAssunto;
-    private String descricaoAssunto;
-    private Integer cdInteressado;
-    private String nmInteressado;
-    private String chaveProcesso;
+  private Long id;
+  private Long nuProcesso;
+  private String sgOrgaoSetor;
+  private String nuAno;
+  private String chaveProcesso;
+  private String descricao;
+  private Long cdAssunto;
+  private Long cdInteressado;
 
 }
