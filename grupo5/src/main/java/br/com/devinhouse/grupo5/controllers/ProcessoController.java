@@ -16,57 +16,50 @@ import br.com.devinhouse.grupo5.service.ServicoDeProcessos;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping(value = "/v1")
-@ResponseBody
+@RequestMapping(value = "/v1/processo")
 public class ProcessoController {
 
 	@Autowired
 	ServicoDeProcessos service;
 
 	@ResponseStatus(code = CREATED)
-	@PostMapping(path = "processo")
+	@PostMapping
 	public ProcessoOutputDTO criaProcesso(@RequestBody ProcessoInputDTO processo) {
 		return service.salvarProcesso(processo);
 	}
 
-	@ResponseStatus(code = OK)
-	@GetMapping(path = "processos")
+	@GetMapping
 	public List<ProcessoOutputDTO> listaProcessos() {
 		return service.buscarTodosProcessos();
 	}
 
-	@ResponseStatus(code = OK)
-	@GetMapping(path = "processo/{id}")
+	@GetMapping(path = "/id/{id}")
 	public ProcessoOutputDTO buscaUmProcesso(@PathVariable("id") Long id) {
 		return service.buscarUmProcesso(id);
 	}
 
-	@ResponseStatus(code = OK)
-	@GetMapping(path = "processo")
+	@GetMapping(path = "/chaveprocesso")
 	public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("chaveProcesso") String chaveProcesso) {
 		return service.buscarUmProcessoPorChave(chaveProcesso);
 	}
-	
-	@ResponseStatus(code = OK)
-	@GetMapping(path = "processo")
+
+	@GetMapping(path = "/cdinteressado")
 	public ProcessoOutputDTO buscaUmProcessoPorInteressado(@RequestParam("cdInteressado") Long cdInteressado) {
 		return service.buscarUmProcessoPorCdInteressado(cdInteressado);
 	}
-	
-	@ResponseStatus(code = OK)
-	@GetMapping(path = "processo")
+
+	@GetMapping(path = "/cdassunto")
 	public ProcessoOutputDTO buscaUmProcessoPorAssunto(@RequestParam("cdAssunto") Long cdAssunto) {
 		return service.buscarUmProcessoPorCdAssunto(cdAssunto);
 	}
 
 	@ResponseStatus(code = NO_CONTENT)
-	@PutMapping(path = "processo/{id}")
+	@PutMapping(path = "/id/{id}")
 	public void atualizaProcesso(@RequestBody ProcessoInputDTO processoAtualizado, @PathVariable("id") Long id) {
 		service.atualizarProcesso(processoAtualizado, id);
 	}
 
-	@ResponseStatus(code = OK)
-	@DeleteMapping(path = "processo/{id}")
+	@DeleteMapping(path = "/id/{id}")
 	public ProcessoOutputDTO deletaProcesso(@PathVariable("id") Long id) {
 		return service.deletarProcesso(id);
 	}

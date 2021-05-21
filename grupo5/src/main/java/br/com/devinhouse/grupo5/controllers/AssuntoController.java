@@ -15,22 +15,19 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/v1" + "/assunto")
+@RequestMapping(value = "/v1/assunto")
 public class AssuntoController {
 
     @Autowired
     AssuntoService assuntoService;
 
     @ResponseStatus(value = CREATED)
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @PostMapping
     public AssuntoOutputDTO cadastrarAssunto(@RequestBody AssuntoInputDTO novoAssunto){
         return assuntoService.cadastrarAssunto(novoAssunto);
     }
 
-    @ResponseStatus(value = OK)
-    @GetMapping(value = "/id/{id}", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @GetMapping(value = "/id/{id}")
     public AssuntoOutputDTO buscarAssuntoPorId(@PathVariable Long id){
         return assuntoService.buscarAssuntoPorId(id);
     }

@@ -18,25 +18,18 @@ public class InteressadoController {
     InteressadoService interessadoService;
 
     @ResponseStatus(value = CREATED)
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @PostMapping
     public InteressadoOutputDTO cadastrarAssunto(@RequestBody InteressadoInputDTO novoInteressado){
         return interessadoService.cadastrarInteressado(novoInteressado);
     }
-    
-    @ResponseStatus(value = OK)
-    @GetMapping(value = "/id/{id}", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
+
+    @GetMapping(value = "/id/{id}")
     public InteressadoOutputDTO buscarInteressadoPeloId(@PathVariable Long id){
         return interessadoService.buscarInteressadoPeloId(id);
     }
 
-    @ResponseStatus(value = OK)
-    @GetMapping(value = "/nuidentificacao", produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @GetMapping(value = "/nuidentificacao")
     public InteressadoOutputDTO buscarInteressadoPeloNuIdentificacao(@RequestParam String valor){
         return interessadoService.buscarInteressadoPeloNuIdentificacao(valor);
     }
-
-
 }

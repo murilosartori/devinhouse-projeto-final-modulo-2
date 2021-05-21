@@ -48,30 +48,30 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(CpfJaExistenteException.class)
   public ResponseEntity<Object> cpfExistenteHandler(CpfJaExistenteException ex, WebRequest webRequest) {
-    return exception(ex, webRequest, NOT_FOUND);
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
   @ExceptionHandler(ProcessoNaoEncontradoException.class)
   public ResponseEntity<Object> pessoaNaoEncontradaHandler(ProcessoNaoEncontradoException ex, WebRequest webRequest) {
-    return exception(ex, webRequest, NOT_FOUND);
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
   @ExceptionHandler(AssuntoNaoEncontradoException.class)
   public ResponseEntity<Object> assuntoNaoEncontradoHandler(AssuntoNaoEncontradoException ex, WebRequest webRequest) {
-    return exception(ex, webRequest, NOT_FOUND);
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
   @ExceptionHandler(NuProcessoJaCadastradoException.class)
   public ResponseEntity<Object> nuProcessoJaCadastradoException(NuProcessoJaCadastradoException ex, WebRequest webRequest){
-    return exception(ex, webRequest, BAD_REQUEST);
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
   }
 
   @ExceptionHandler(InteressadoNaoEncontradoException.class)
   public ResponseEntity<Object> interessadoNaoEncontradoHandler(InteressadoNaoEncontradoException ex, WebRequest webRequest) {
-    return exception(ex, webRequest, NOT_FOUND);
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
-  private ResponseEntity<Object> exception(Exception ex, WebRequest webRequest, HttpStatus status){
+  private ResponseEntity<Object> exceptionSchema(Exception ex, WebRequest webRequest, HttpStatus status){
     var validation = newValidation(ex.getMessage(), status);
     return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);
   }
