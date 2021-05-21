@@ -10,80 +10,108 @@ import org.springframework.stereotype.Service;
 
 import br.com.devinhouse.grupo5.domain.exceptions.NuProcessoJaCadastradoException;
 import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
+import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
+import br.com.devinhouse.grupo5.model.Assunto;
+import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
 
 @Service
 public class ServicoDeProcessos {
 
-  @Autowired
-  ModelMapper modelMapper;
+	@Autowired
+	ModelMapper modelMapper;
 
-  @Autowired
-  RepositorioDeProcessos processoRepository;
+	@Autowired
+	InteressadoService interessadoService;
+	
+	@Autowired
+	AssuntoService assuntoService;
+	
+	@Autowired
+	RepositorioDeProcessos processoRepository;
 
-  public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
-    var processo = toProcesso(processoInputDTO);
-    Boolean b = processoRepository.existsByNuProcesso(processo.getNuProcesso());
-    // 1 - Não poderá ser cadastrado um novo processo com um id já existente;
-    if (Boolean.TRUE.equals(b)) {
-      throw new NuProcessoJaCadastradoException(processo.getChaveProcesso());
-    }
-    //TODO: 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
-    //TODO: 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
-    //TODO: 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
-    //TODO: 5 - Não poderá ser cadastrado um novo processo com interessados inesistentes no sistema;
-    //TODO: 6 - Não poderá ser cadastrado um novo processo com assuntos inesistentes no sistema;
-    //TODO: 7 - Não poderá ser cadastrado um novo interessado com um id já existente;
-    //TODO: 8 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
-    //TODO: 9 - Não poderá ser cadastrado um novo interessado com um documento de identificação inválido;
-    return toDTO(processoRepository.save(processo));
-  }
+	public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
+		var processo = toProcesso(processoInputDTO);
+		Boolean b = processoRepository.existsByNuProcesso(processo.getNuProcesso());
+		// 1 - Não poderá ser cadastrado um novo processo com um id já existente;
+		if (Boolean.TRUE.equals(b)) {
+			throw new NuProcessoJaCadastradoException(processo.getChaveProcesso());
+		}
+		// TODO: 2 - Não poderá ser cadastrado um novo processo com uma chave de
+		// processo já existente;
+		// TODO: 3 - Não poderá ser cadastrado um novo processo com interessados
+		// inativos;
+		// TODO: 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
+		// TODO: 5 - Não poderá ser cadastrado um novo processo com interessados
+		// inesistentes no sistema;
+		// TODO: 6 - Não poderá ser cadastrado um novo processo com assuntos
+		// inesistentes no sistema;
+		// TODO: 7 - Não poderá ser cadastrado um novo interessado com um id já
+		// existente;
+		// TODO: 8 - Não poderá ser cadastrado um novo interessado com um mesmo
+		// documento de indentificação;
+		// TODO: 9 - Não poderá ser cadastrado um novo interessado com um documento de
+		// identificação inválido;
+		return toDTO(processoRepository.save(processo));
+	}
 
-  public List<ProcessoOutputDTO> buscarTodosProcessos() {
-    return toDTO(processoRepository.findAll());
-  }
+	public List<ProcessoOutputDTO> buscarTodosProcessos() {
+		return toDTO(processoRepository.findAll());
+	}
 
-  public ProcessoOutputDTO buscarUmProcesso(Long id) {
-    var processo = processoRepository.findById(id)
-      .orElseThrow(() -> new ProcessoNaoEncontradoException(id));
-    return toDTO(processo);
-  }
+	public ProcessoOutputDTO buscarUmProcesso(Long id) {
+		var processo = processoRepository.findById(id).orElseThrow(() -> new ProcessoNaoEncontradoException(id));
+		return toDTO(processo);
+	}
 
-  public ProcessoOutputDTO buscarUmProcessoPorChave(String chaveProcesso) {
-    var processo = processoRepository.findByChaveProcesso(chaveProcesso)
-    .orElseThrow(() -> new ProcessoNaoEncontradoException(chaveProcesso));
-    return toDTO(processo);
-  }
+	public ProcessoOutputDTO buscarUmProcessoPorChave(String chaveProcesso) {
+		var processo = processoRepository.findByChaveProcesso(chaveProcesso)
+				.orElseThrow(() -> new ProcessoNaoEncontradoException(chaveProcesso));
+		return toDTO(processo);
+	}
 
-  public void atualizarProcesso(ProcessoInputDTO processoInputDTO, Long id) {
-    var processoIndicado = processoRepository.findById(id)
-      .orElseThrow(() -> new ProcessoNaoEncontradoException(id));
-    var processoAtualizado = toProcesso(processoInputDTO);
-    BeanUtils.copyProperties(processoIndicado, processoAtualizado, "id");
-    //TODO: conferir se há alguma informação que deverá ser ignorada além de id
-    processoRepository.save(processoIndicado);
-  }
+	public ProcessoOutputDTO buscarUmProcessoPorCdInteressado(Long cdInteressado) {
+		Interessado interessado = modelMapper.map(interessadoService.buscarInteressadoPeloId(cdInteressado), Interessado.class);
+		var processo = processoRepository.findByCdInteressado(interessado)
+				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdInteressado));
+		return toDTO(processo);
+	}
+	
+	public ProcessoOutputDTO buscarUmProcessoPorCdAssunto(Long cdAssunto) {
+		Assunto assunto = modelMapper.map(assuntoService.buscarAssuntoPorId(cdAssunto), Assunto.class);
+		var processo = processoRepository.findByCdAssunto(assunto)
+				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdAssunto));
+		return toDTO(processo);
+	}
 
-  public ProcessoOutputDTO deletarProcesso(Long id) {
-    var processo = processoRepository.findById(id)
-      .orElseThrow(() -> new ProcessoNaoEncontradoException(id));
-    processoRepository.deleteById(id);
-    return toDTO(processo);
-  }
+	public void atualizarProcesso(ProcessoInputDTO processoInputDTO, Long id) {
+		var processoIndicado = processoRepository.findById(id)
+				.orElseThrow(() -> new ProcessoNaoEncontradoException(id));
+		var processoAtualizado = toProcesso(processoInputDTO);
+		BeanUtils.copyProperties(processoIndicado, processoAtualizado, "id");
+		// TODO: conferir se há alguma informação que deverá ser ignorada além de id
+		processoRepository.save(processoIndicado);
+	}
 
-  private Processo toProcesso(ProcessoInputDTO processoInputDTO) {
-    return modelMapper.map(processoInputDTO, Processo.class);
-  }
+	public ProcessoOutputDTO deletarProcesso(Long id) {
+		var processo = processoRepository.findById(id).orElseThrow(() -> new ProcessoNaoEncontradoException(id));
+		processoRepository.deleteById(id);
+		return toDTO(processo);
+	}
 
-  private ProcessoOutputDTO toDTO(Processo processo) {
-    return modelMapper.map(processo, ProcessoOutputDTO.class);
-  }
+	private Processo toProcesso(ProcessoInputDTO processoInputDTO) {
+		return modelMapper.map(processoInputDTO, Processo.class);
+	}
 
-  private List<ProcessoOutputDTO> toDTO(List<Processo> processos) {
-    return processos.stream().map(this::toDTO).collect(Collectors.toList());
-  }
+	private ProcessoOutputDTO toDTO(Processo processo) {
+		return modelMapper.map(processo, ProcessoOutputDTO.class);
+	}
+
+	private List<ProcessoOutputDTO> toDTO(List<Processo> processos) {
+		return processos.stream().map(this::toDTO).collect(Collectors.toList());
+	}
 
 }

@@ -46,6 +46,18 @@ public class ProcessoController {
 	public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("chaveProcesso") String chaveProcesso) {
 		return service.buscarUmProcessoPorChave(chaveProcesso);
 	}
+	
+	@ResponseStatus(code = OK)
+	@GetMapping(path = "processo")
+	public ProcessoOutputDTO buscaUmProcessoPorInteressado(@RequestParam("cdInteressado") Long cdInteressado) {
+		return service.buscarUmProcessoPorCdInteressado(cdInteressado);
+	}
+	
+	@ResponseStatus(code = OK)
+	@GetMapping(path = "processo")
+	public ProcessoOutputDTO buscaUmProcessoPorAssunto(@RequestParam("cdAssunto") Long cdAssunto) {
+		return service.buscarUmProcessoPorCdAssunto(cdAssunto);
+	}
 
 	@ResponseStatus(code = NO_CONTENT)
 	@PutMapping(path = "processo/{id}")
