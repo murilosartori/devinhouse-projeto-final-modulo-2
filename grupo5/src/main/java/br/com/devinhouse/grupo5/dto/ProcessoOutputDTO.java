@@ -1,5 +1,7 @@
 package br.com.devinhouse.grupo5.dto;
 
+import br.com.devinhouse.grupo5.model.Assunto;
+import br.com.devinhouse.grupo5.model.Interessado;
 import lombok.*;
 
 @Getter
@@ -15,7 +17,7 @@ public class ProcessoOutputDTO {
   private String nuAno;
   private String chaveProcesso;
   private String descricao;
-  private Long cdAssunto;
-  private Long cdInteressado;
+  private Assunto cdAssunto;
+  private Interessado cdInteressado;
 
 }

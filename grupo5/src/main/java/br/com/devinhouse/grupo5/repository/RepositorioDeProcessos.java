@@ -10,13 +10,12 @@ import br.com.devinhouse.grupo5.model.Processo;
 
 public interface RepositorioDeProcessos extends JpaRepository<Processo, Long> {
 	Optional<Processo> findByChaveProcesso(String chaveProcesso);
-	
+
 	Optional<Processo> findByCdAssunto(Assunto cdAssunto);
-	
+
 	Optional<Processo> findByCdInteressado(Interessado cdInteressado);
 
 	Optional<Processo> findByNuProcesso(Integer nuProcesso);
-  
-  Boolean existsByNuProcesso (Integer nuProcesso);
 
+	Boolean existsByNuProcesso(Integer nuProcesso);
 }

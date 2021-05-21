@@ -1,6 +1,7 @@
 package br.com.devinhouse.grupo5.service;
 
 import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
+import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.repository.RepositorioDeInteressado;
@@ -16,6 +17,10 @@ public class InteressadoService {
 
     @Autowired
     ModelMapper modelMapper;
+    
+    public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
+        return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
+    }
 
     public InteressadoOutputDTO buscarInteressadoPeloId(Long id){
         return toDTO(repositorioDeInteressado.findById(id).orElseThrow(InteressadoNaoEncontradoException::new));
@@ -29,7 +34,7 @@ public class InteressadoService {
         return modelMapper.map(interessado, InteressadoOutputDTO.class);
     }
 
-    private Interessado toInteressado(InteressadoOutputDTO interessadoOutputDTO){
+    private Interessado toInteressado(InteressadoInputDTO interessadoOutputDTO){
         return modelMapper.map(interessadoOutputDTO, Interessado.class);
     }
 }
