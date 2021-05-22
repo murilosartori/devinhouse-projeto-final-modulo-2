@@ -7,14 +7,16 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class InteressadoInputDTO {
 
-    private Long id;
     private String nmInteressado;
+    @CPF
     private String nuIdentificacao;
     private Date dtNascimento;
     private Boolean flAtivo;

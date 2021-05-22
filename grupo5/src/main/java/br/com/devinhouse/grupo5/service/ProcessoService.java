@@ -22,47 +22,45 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 @Service
-public class ServicoDeProcessos {
+public class ProcessoService {
 
 	@Autowired
 	ModelMapper modelMapper;
 
 	@Autowired
 	InteressadoService interessadoService;
-	
+
 	@Autowired
 	AssuntoService assuntoService;
-	
+
 	@Autowired
 	RepositorioDeProcessos processoRepository;
 
 	public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
 		var processo = toProcesso(processoInputDTO);
 
-		// 1 - Não poderá ser cadastrado um novo processo com um id já existente;
 		Boolean existNuProcesso = processoRepository.existsByNuProcesso(processo.getNuProcesso());
 		if (TRUE.equals(existNuProcesso)) {
 			throw new NuProcessoJaCadastradoException();
 		}
-		
-		// 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
+
 		Boolean existChaveProcesso = processoRepository.existsByChaveProcesso(processo.getChaveProcesso());
 		if (TRUE.equals(existChaveProcesso)) {
 			throw new NuProcessoJaCadastradoException(processo.getChaveProcesso());
 		}
-		
+
 		// 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
 		// 4 - Não poderá ser cadastrado um novo processo com interessados inexistentes no sistema;
 		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
 		if (interessadoOut != null) {
 			if (FALSE.equals(interessadoOut.getFlAtivo())) {
-				throw new InativoException("O interessado informado encontra-se inativo no momento.");
+				throw new InativoException();
 			}
 			processo.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
 		} else {
 			throw new InteressadoNaoEncontradoException();
 		}
-		
+
 		// 5 - Não poderá ser cadastrado um novo processo com assuntos inativos;
 		// 6 - Não poderá ser cadastrado um novo processo com assuntos inexistentes no sistema;
 		AssuntoOutputDTO assuntoOut = assuntoService.buscarAssuntoPorId(processoInputDTO.getCdAssunto());
@@ -92,25 +90,71 @@ public class ServicoDeProcessos {
 		return toDTO(processo);
 	}
 
-	public ProcessoOutputDTO buscarUmProcessoPorCdInteressado(Long cdInteressado) {
-		Interessado interessado = modelMapper.map(interessadoService.buscarInteressadoPeloId(cdInteressado), Interessado.class);
-		var processo = processoRepository.findByCdInteressado(interessado)
-				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdInteressado));
-		return toDTO(processo);
+	public List<ProcessoOutputDTO> buscarUmProcessoPorCdInteressado(Long cdInteressado) {
+		var interessado = modelMapper.map(interessadoService.buscarInteressadoPeloId(cdInteressado), Interessado.class);
+		List<Processo> processos = processoRepository.findByCdInteressado(interessado);
+//		if (processos.isEmpty()) {
+//			throw new ProcessoNaoEncontradoException("interessado", cdInteressado + "");
+//		}
+		return toDTO(processos);
 	}
-	
-	public ProcessoOutputDTO buscarUmProcessoPorCdAssunto(Long cdAssunto) {
-		Assunto assunto = modelMapper.map(assuntoService.buscarAssuntoPorId(cdAssunto), Assunto.class);
-		var processo = processoRepository.findByCdAssunto(assunto)
-				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdAssunto));
-		return toDTO(processo);
+
+	public List<ProcessoOutputDTO> buscarUmProcessoPorCdAssunto(Long cdAssunto) {
+		var assunto = modelMapper.map(assuntoService.buscarAssuntoPorId(cdAssunto), Assunto.class);
+		List<Processo> processos = processoRepository.findByCdAssunto(assunto);
+//		if (processos.isEmpty()) {
+//			throw new ProcessoNaoEncontradoException("assunto", cdAssunto + "");
+//		}
+		return toDTO(processos);
 	}
 
 	public void atualizarProcesso(ProcessoInputDTO processoInputDTO, Long id) {
 		var processoIndicado = processoRepository.findById(id)
 				.orElseThrow(() -> new ProcessoNaoEncontradoException(id));
 		var processoAtualizado = toProcesso(processoInputDTO);
-		BeanUtils.copyProperties(processoIndicado, processoAtualizado, "id");
+
+		if(!processoAtualizado.getNuProcesso().equals(processoIndicado.getNuProcesso())) {
+
+			Boolean existNuProcesso = processoRepository.existsByNuProcesso(processoAtualizado.getNuProcesso());
+			if (TRUE.equals(existNuProcesso)) {
+				throw new NuProcessoJaCadastradoException();
+			}
+		}
+
+		if(!processoAtualizado.getChaveProcesso().equals(processoIndicado.getChaveProcesso())) {
+
+			Boolean existChaveProcesso = processoRepository.existsByChaveProcesso(processoAtualizado.getChaveProcesso());
+			if (TRUE.equals(existChaveProcesso)) {
+				throw new NuProcessoJaCadastradoException(processoAtualizado.getChaveProcesso());
+			}
+		}
+
+		// 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
+		// 4 - Não poderá ser cadastrado um novo processo com interessados inexistentes no sistema;
+		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
+		if (interessadoOut != null) {
+			if (FALSE.equals(interessadoOut.getFlAtivo())) {
+				throw new InativoException();
+			}
+			processoAtualizado.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
+		} else {
+			throw new InteressadoNaoEncontradoException();
+		}
+
+		// 5 - Não poderá ser cadastrado um novo processo com assuntos inativos;
+		// 6 - Não poderá ser cadastrado um novo processo com assuntos inexistentes no sistema;
+		AssuntoOutputDTO assuntoOut = assuntoService.buscarAssuntoPorId(processoInputDTO.getCdAssunto());
+		if (assuntoOut != null) {
+			if (FALSE.equals(assuntoOut.getFlAtivo())) {
+				throw new InativoException("O assunto informado encontra-se inativo no momento.");
+			}
+			processoAtualizado.setCdAssunto(modelMapper.map(assuntoOut, Assunto.class));
+		} else {
+			throw new AssuntoNaoEncontradoException();
+		}
+		BeanUtils.copyProperties(processoAtualizado, processoIndicado, "id");
+		System.out.println(processoAtualizado);
+		System.out.println(processoIndicado);
 		// TODO: conferir se há alguma informação que deverá ser ignorada além de id
 		processoRepository.save(processoIndicado);
 	}
