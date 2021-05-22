@@ -8,7 +8,10 @@ import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.repository.RepositorioDeInteressado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static java.lang.Boolean.TRUE;
 
@@ -23,12 +26,14 @@ public class InteressadoService {
 
     public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
         // 1 - Não poderá ser cadastrado um novo interessado com um id já existente;
-        InteressadoOutputDTO interessado = null;
-        try {
-            interessado = buscarInteressadoPeloId(novoInteressado.getId());
-        } catch (InteressadoNaoEncontradoException ignored){
-        }
-        if (interessado != null) {
+       // Optional<Interessado> interessado = );
+
+//                null;
+//        try {
+//            interessado = buscarInteressadoPeloId(novoInteressado.getId());
+//        } catch (InteressadoNaoEncontradoException ignored){
+//        }
+        if (repositorioDeInteressado.findById(novoInteressado.getId()).isPresent()) {
             throw new InformacaoJaCadastradaException("Há um interessado cadastrado com o mesmo ID.");
         }
         // 2 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
