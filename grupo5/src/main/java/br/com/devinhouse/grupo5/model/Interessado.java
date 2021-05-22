@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +30,7 @@ public class Interessado {
 	private Long id;
 	@Column(length = 250, nullable = false)
 	private String nmInteressado;
+	@CPF
 	@Column(length = 50, nullable = false)
 	private String nuIdentificacao;
 	@Column(nullable = false)
