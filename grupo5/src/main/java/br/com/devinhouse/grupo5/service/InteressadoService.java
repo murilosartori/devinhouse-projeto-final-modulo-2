@@ -19,6 +19,16 @@ public class InteressadoService {
     ModelMapper modelMapper;
     
     public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
+		// 1 - Não poderá ser cadastrado um novo interessado com um id já existente;
+    	var interessado = buscarInteressadoPeloId(novoInteressado.getId());
+    	if (interessado != null) {
+    		throw new InteressadoNaoEncontradoException("Há um interessado cadastrado com o mesmo ID.");
+    	}
+		// 2 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
+    	Boolean existNuIdentificacao = repositorioDeInteressado.existsByNuIdentificacao(novoInteressado.getNuIdentificacao());
+    	if (Boolean.TRUE.equals(existNuIdentificacao)) {
+    		throw new InteressadoNaoEncontradoException("A identificação informada já está cadastrada.");
+    	}
         return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
     }
 
