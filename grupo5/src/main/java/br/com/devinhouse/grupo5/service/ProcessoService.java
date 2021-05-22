@@ -22,7 +22,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 @Service
-public class ServicoDeProcessos {
+public class ProcessoService {
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -39,13 +39,11 @@ public class ServicoDeProcessos {
 	public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
 		var processo = toProcesso(processoInputDTO);
 
-		// 1 - Não poderá ser cadastrado um novo processo com um id já existente;
 		Boolean existNuProcesso = processoRepository.existsByNuProcesso(processo.getNuProcesso());
 		if (TRUE.equals(existNuProcesso)) {
 			throw new NuProcessoJaCadastradoException();
 		}
 		
-		// 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
 		Boolean existChaveProcesso = processoRepository.existsByChaveProcesso(processo.getChaveProcesso());
 		if (TRUE.equals(existChaveProcesso)) {
 			throw new NuProcessoJaCadastradoException(processo.getChaveProcesso());
@@ -56,7 +54,7 @@ public class ServicoDeProcessos {
 		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
 		if (interessadoOut != null) {
 			if (FALSE.equals(interessadoOut.getFlAtivo())) {
-				throw new InativoException("O interessado informado encontra-se inativo no momento.");
+				throw new InativoException();
 			}
 			processo.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
 		} else {
@@ -93,14 +91,14 @@ public class ServicoDeProcessos {
 	}
 
 	public ProcessoOutputDTO buscarUmProcessoPorCdInteressado(Long cdInteressado) {
-		Interessado interessado = modelMapper.map(interessadoService.buscarInteressadoPeloId(cdInteressado), Interessado.class);
+		var interessado = modelMapper.map(interessadoService.buscarInteressadoPeloId(cdInteressado), Interessado.class);
 		var processo = processoRepository.findByCdInteressado(interessado)
 				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdInteressado));
 		return toDTO(processo);
 	}
 	
 	public ProcessoOutputDTO buscarUmProcessoPorCdAssunto(Long cdAssunto) {
-		Assunto assunto = modelMapper.map(assuntoService.buscarAssuntoPorId(cdAssunto), Assunto.class);
+		var assunto = modelMapper.map(assuntoService.buscarAssuntoPorId(cdAssunto), Assunto.class);
 		var processo = processoRepository.findByCdAssunto(assunto)
 				.orElseThrow(() -> new ProcessoNaoEncontradoException(cdAssunto));
 		return toDTO(processo);

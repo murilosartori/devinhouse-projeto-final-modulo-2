@@ -18,45 +18,35 @@ import static java.lang.Boolean.TRUE;
 @Service
 public class InteressadoService {
 
-    @Autowired
-    RepositorioDeInteressado repositorioDeInteressado;
+  @Autowired
+  RepositorioDeInteressado repositorioDeInteressado;
 
-    @Autowired
-    ModelMapper modelMapper;
+  @Autowired
+  ModelMapper modelMapper;
 
-    public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
-        // 1 - Não poderá ser cadastrado um novo interessado com um id já existente;
-       // Optional<Interessado> interessado = );
+  public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
 
-//                null;
-//        try {
-//            interessado = buscarInteressadoPeloId(novoInteressado.getId());
-//        } catch (InteressadoNaoEncontradoException ignored){
-//        }
-        if (repositorioDeInteressado.findById(novoInteressado.getId()).isPresent()) {
-            throw new InformacaoJaCadastradaException("Há um interessado cadastrado com o mesmo ID.");
-        }
-        // 2 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
-        Boolean existNuIdentificacao = repositorioDeInteressado.existsByNuIdentificacao(novoInteressado.getNuIdentificacao());
-        if (TRUE.equals(existNuIdentificacao)) {
-            throw new InformacaoJaCadastradaException("A identificação informada já está cadastrada.");
-        }
-        return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
+    if (repositorioDeInteressado.findByNuIdentificacao(novoInteressado.getNuIdentificacao()).isPresent()) {
+      throw new InformacaoJaCadastradaException("Há um interessado cadastrado com a mesma identificação.");
     }
 
-    public InteressadoOutputDTO buscarInteressadoPeloId(Long id){
-        return toDTO(repositorioDeInteressado.findById(id).orElseThrow(InteressadoNaoEncontradoException::new));
-    }
+    return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
+  }
 
-    public InteressadoOutputDTO buscarInteressadoPeloNuIdentificacao(String valor) {
-        return toDTO(repositorioDeInteressado.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
-    }
+  public InteressadoOutputDTO buscarInteressadoPeloId(Long id) {
+    return toDTO(repositorioDeInteressado.findById(id).orElseThrow(InteressadoNaoEncontradoException::new));
+  }
 
-    private InteressadoOutputDTO toDTO(Interessado interessado){
-        return modelMapper.map(interessado, InteressadoOutputDTO.class);
-    }
+  public InteressadoOutputDTO buscarInteressadoPeloNuIdentificacao(String valor) {
+    return toDTO(
+        repositorioDeInteressado.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
+  }
 
-    private Interessado toInteressado(InteressadoInputDTO interessadoInputDTO){
-        return modelMapper.map(interessadoInputDTO, Interessado.class);
-    }
+  private InteressadoOutputDTO toDTO(Interessado interessado) {
+    return modelMapper.map(interessado, InteressadoOutputDTO.class);
+  }
+
+  private Interessado toInteressado(InteressadoInputDTO interessadoInputDTO) {
+    return modelMapper.map(interessadoInputDTO, Interessado.class);
+  }
 }
