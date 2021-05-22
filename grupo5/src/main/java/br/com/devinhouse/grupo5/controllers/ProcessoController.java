@@ -39,17 +39,17 @@ public class ProcessoController {
   }
 
   @GetMapping(path = "/chaveprocesso")
-  public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("chaveProcesso") String chaveProcesso) {
+  public ProcessoOutputDTO buscaUmProcessoPorChave(@RequestParam("q") String chaveProcesso) {
     return service.buscarUmProcessoPorChave(chaveProcesso);
   }
 
   @GetMapping(path = "/cdinteressado")
-  public ProcessoOutputDTO buscaUmProcessoPorInteressado(@RequestParam("cdInteressado") Long cdInteressado) {
+  public List<ProcessoOutputDTO> buscaUmProcessoPorInteressado(@RequestParam("q") Long cdInteressado) {
     return service.buscarUmProcessoPorCdInteressado(cdInteressado);
   }
 
   @GetMapping(path = "/cdassunto")
-  public ProcessoOutputDTO buscaUmProcessoPorAssunto(@RequestParam("cdAssunto") Long cdAssunto) {
+  public List<ProcessoOutputDTO> buscaUmProcessoPorAssunto(@RequestParam("q") Long cdAssunto) {
     return service.buscarUmProcessoPorCdAssunto(cdAssunto);
   }
 
