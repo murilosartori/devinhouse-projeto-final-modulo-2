@@ -1,5 +1,6 @@
 package br.com.devinhouse.grupo5.service;
 
+import br.com.devinhouse.grupo5.domain.exceptions.InformacaoJaCadastradaException;
 import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
@@ -9,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static java.lang.Boolean.TRUE;
+
 @Service
 public class InteressadoService {
 
@@ -17,18 +20,22 @@ public class InteressadoService {
 
     @Autowired
     ModelMapper modelMapper;
-    
+
     public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
-		// 1 - Não poderá ser cadastrado um novo interessado com um id já existente;
-    	var interessado = buscarInteressadoPeloId(novoInteressado.getId());
-    	if (interessado != null) {
-    		throw new InteressadoNaoEncontradoException("Há um interessado cadastrado com o mesmo ID.");
-    	}
-		// 2 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
-    	Boolean existNuIdentificacao = repositorioDeInteressado.existsByNuIdentificacao(novoInteressado.getNuIdentificacao());
-    	if (Boolean.TRUE.equals(existNuIdentificacao)) {
-    		throw new InteressadoNaoEncontradoException("A identificação informada já está cadastrada.");
-    	}
+        // 1 - Não poderá ser cadastrado um novo interessado com um id já existente;
+        InteressadoOutputDTO interessado = null;
+        try {
+            interessado = buscarInteressadoPeloId(novoInteressado.getId());
+        } catch (InteressadoNaoEncontradoException ignored){
+        }
+        if (interessado != null) {
+            throw new InformacaoJaCadastradaException("Há um interessado cadastrado com o mesmo ID.");
+        }
+        // 2 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
+        Boolean existNuIdentificacao = repositorioDeInteressado.existsByNuIdentificacao(novoInteressado.getNuIdentificacao());
+        if (TRUE.equals(existNuIdentificacao)) {
+            throw new InformacaoJaCadastradaException("A identificação informada já está cadastrada.");
+        }
         return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
     }
 
@@ -44,7 +51,7 @@ public class InteressadoService {
         return modelMapper.map(interessado, InteressadoOutputDTO.class);
     }
 
-    private Interessado toInteressado(InteressadoInputDTO interessadoOutputDTO){
-        return modelMapper.map(interessadoOutputDTO, Interessado.class);
+    private Interessado toInteressado(InteressadoInputDTO interessadoInputDTO){
+        return modelMapper.map(interessadoInputDTO, Interessado.class);
     }
 }

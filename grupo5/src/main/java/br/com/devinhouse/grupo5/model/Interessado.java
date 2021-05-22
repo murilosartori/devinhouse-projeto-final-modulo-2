@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Builder(toBuilder = true)
 @AllArgsConstructor
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Table(name = "Interessado")
 public class Interessado {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	@Column(length = 250, nullable = false)
 	private String nmInteressado;
