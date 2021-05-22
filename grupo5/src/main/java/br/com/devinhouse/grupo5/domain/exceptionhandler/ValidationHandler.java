@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -71,19 +72,29 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
+  @ExceptionHandler(InformacaoJaCadastradaException.class)
+  public ResponseEntity<Object> informacaoJaCadastradaException(InformacaoJaCadastradaException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<Object> constraintViolationException(ConstraintViolationException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
   private ResponseEntity<Object> exceptionSchema(Exception ex, WebRequest webRequest, HttpStatus status){
     var validation = newValidation(ex.getMessage(), status);
     return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);
   }
 
-    //TODO:Exception e ExceptionHandler 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
-    //TODO:Exception e ExceptionHandler 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
-    //TODO:Exception e ExceptionHandler 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
-    //TODO:Exception e ExceptionHandler 5 - Não poderá ser cadastrado um novo processo com interessados inesistentes no sistema;
-    //TODO:Exception e ExceptionHandler 6 - Não poderá ser cadastrado um novo processo com assuntos inesistentes no sistema;
-    //TODO:Exception e ExceptionHandler 7 - Não poderá ser cadastrado um novo interessado com um id já existente;
-    //TODO:Exception e ExceptionHandler 8 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
-    //TODO:Exception e ExceptionHandler 9 - Não poderá ser cadastrado um novo interessado com um documento de identificação inválido;
+  //TODO:Exception e ExceptionHandler 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
+  //TODO:Exception e ExceptionHandler 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
+  //TODO:Exception e ExceptionHandler 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
+  //TODO:Exception e ExceptionHandler 5 - Não poderá ser cadastrado um novo processo com interessados inesistentes no sistema;
+  //TODO:Exception e ExceptionHandler 6 - Não poderá ser cadastrado um novo processo com assuntos inesistentes no sistema;
+  //TODO:Exception e ExceptionHandler 7 - Não poderá ser cadastrado um novo interessado com um id já existente;
+  //TODO:Exception e ExceptionHandler 8 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
+  //TODO:Exception e ExceptionHandler 9 - Não poderá ser cadastrado um novo interessado com um documento de identificação inválido;
 
   private Validation newValidation(String titulo, HttpStatus status) {
     var validation = new Validation();

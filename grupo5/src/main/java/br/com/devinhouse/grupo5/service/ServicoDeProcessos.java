@@ -3,15 +3,12 @@ package br.com.devinhouse.grupo5.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.devinhouse.grupo5.domain.exceptions.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.devinhouse.grupo5.domain.exceptions.AssuntoNaoEncontradoException;
-import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
-import br.com.devinhouse.grupo5.domain.exceptions.NuProcessoJaCadastradoException;
-import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
@@ -20,6 +17,9 @@ import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.model.Processo;
 import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 @Service
 public class ServicoDeProcessos {
@@ -41,13 +41,13 @@ public class ServicoDeProcessos {
 
 		// 1 - Não poderá ser cadastrado um novo processo com um id já existente;
 		Boolean existNuProcesso = processoRepository.existsByNuProcesso(processo.getNuProcesso());
-		if (Boolean.TRUE.equals(existNuProcesso)) {
+		if (TRUE.equals(existNuProcesso)) {
 			throw new NuProcessoJaCadastradoException();
 		}
 		
 		// 2 - Não poderá ser cadastrado um novo processo com uma chave de processo já existente;
 		Boolean existChaveProcesso = processoRepository.existsByChaveProcesso(processo.getChaveProcesso());
-		if (Boolean.TRUE.equals(existChaveProcesso)) {
+		if (TRUE.equals(existChaveProcesso)) {
 			throw new NuProcessoJaCadastradoException(processo.getChaveProcesso());
 		}
 		
@@ -55,8 +55,8 @@ public class ServicoDeProcessos {
 		// 4 - Não poderá ser cadastrado um novo processo com interessados inexistentes no sistema;
 		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
 		if (interessadoOut != null) {
-			if (Boolean.FALSE.equals(interessadoOut.getFlAtivo())) {
-				throw new InteressadoNaoEncontradoException("O interessado informado encontra-se inativo no momento.");
+			if (FALSE.equals(interessadoOut.getFlAtivo())) {
+				throw new InativoException("O interessado informado encontra-se inativo no momento.");
 			}
 			processo.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
 		} else {
@@ -67,8 +67,8 @@ public class ServicoDeProcessos {
 		// 6 - Não poderá ser cadastrado um novo processo com assuntos inexistentes no sistema;
 		AssuntoOutputDTO assuntoOut = assuntoService.buscarAssuntoPorId(processoInputDTO.getCdAssunto());
 		if (assuntoOut != null) {
-			if (Boolean.FALSE.equals(assuntoOut.getFlAtivo())) {
-				throw new AssuntoNaoEncontradoException("O assunto informado encontra-se inativo no momento.");
+			if (FALSE.equals(assuntoOut.getFlAtivo())) {
+				throw new InativoException("O assunto informado encontra-se inativo no momento.");
 			}
 			processo.setCdAssunto(modelMapper.map(assuntoOut, Assunto.class));
 		} else {
