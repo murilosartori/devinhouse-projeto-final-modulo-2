@@ -153,8 +153,6 @@ public class ProcessoService {
 			throw new AssuntoNaoEncontradoException();
 		}
 		BeanUtils.copyProperties(processoAtualizado, processoIndicado, "id");
-		System.out.println(processoAtualizado);
-		System.out.println(processoIndicado);
 		// TODO: conferir se há alguma informação que deverá ser ignorada além de id
 		processoRepository.save(processoIndicado);
 	}
