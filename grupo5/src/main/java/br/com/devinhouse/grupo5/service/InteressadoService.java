@@ -5,41 +5,36 @@ import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoExcept
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.model.Interessado;
-import br.com.devinhouse.grupo5.repository.RepositorioDeInteressado;
+import br.com.devinhouse.grupo5.repository.InteressadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import static java.lang.Boolean.TRUE;
 
 @Service
 public class InteressadoService {
 
   @Autowired
-  RepositorioDeInteressado repositorioDeInteressado;
+  InteressadoRepository interessadoRepository;
 
   @Autowired
   ModelMapper modelMapper;
 
   public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
 
-    if (repositorioDeInteressado.findByNuIdentificacao(novoInteressado.getNuIdentificacao()).isPresent()) {
+    if (interessadoRepository.findByNuIdentificacao(novoInteressado.getNuIdentificacao()).isPresent()) {
       throw new InformacaoJaCadastradaException("Há um interessado cadastrado com a mesma identificação.");
     }
 
-    return toDTO(repositorioDeInteressado.save(toInteressado(novoInteressado)));
+    return toDTO(interessadoRepository.save(toInteressado(novoInteressado)));
   }
 
   public InteressadoOutputDTO buscarInteressadoPeloId(Long id) {
-    return toDTO(repositorioDeInteressado.findById(id).orElseThrow(InteressadoNaoEncontradoException::new));
+    return toDTO(interessadoRepository.findById(id).orElseThrow(InteressadoNaoEncontradoException::new));
   }
 
   public InteressadoOutputDTO buscarInteressadoPeloNuIdentificacao(String valor) {
     return toDTO(
-        repositorioDeInteressado.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
+        interessadoRepository.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
   }
 
   private InteressadoOutputDTO toDTO(Interessado interessado) {
