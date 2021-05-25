@@ -2,18 +2,14 @@ package br.com.devinhouse.grupo5.controllers;
 
 import br.com.devinhouse.grupo5.dto.ProcessoInputDTO;
 import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
-
-import org.aspectj.apache.bcel.classfile.Code;
+import br.com.devinhouse.grupo5.service.ProcessoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import br.com.devinhouse.grupo5.service.ProcessoService;
-
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(value = "/v1/processo")

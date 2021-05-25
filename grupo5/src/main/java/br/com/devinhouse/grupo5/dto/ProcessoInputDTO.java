@@ -2,10 +2,7 @@ package br.com.devinhouse.grupo5.dto;
 
 import lombok.*;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.SequenceGenerator;
-
-import static javax.persistence.GenerationType.SEQUENCE;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -14,11 +11,17 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @ToString
 public class ProcessoInputDTO {
 
+  @NotNull
   private Long nuProcesso;
+  @NotNull
   private String sgOrgaoSetor;
+  @NotNull
   private String nuAno;
+  @NotNull
   private String descricao;
+  @NotNull
   private Long cdAssunto;
+  @NotNull
   private Long cdInteressado;
 
   public String getChaveProcesso() {

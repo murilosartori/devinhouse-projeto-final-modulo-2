@@ -33,7 +33,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
 
-    Validation validation = newValidation("Um ou mais campos estão incorretos. Corrija e tente novamente", status);
+    var validation = newValidation("Um ou mais campos estão incorretos. Corrija e tente novamente", status);
 
     new Locale("pt-BR");
     List<Validation.Campo> campos = ex.getBindingResult().getAllErrors().stream()

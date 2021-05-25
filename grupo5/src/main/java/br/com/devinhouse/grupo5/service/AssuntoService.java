@@ -4,7 +4,7 @@ import br.com.devinhouse.grupo5.domain.exceptions.AssuntoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.AssuntoInputDTO;
 import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
 import br.com.devinhouse.grupo5.model.Assunto;
-import br.com.devinhouse.grupo5.repository.RepositorioDeAssunto;
+import br.com.devinhouse.grupo5.repository.AssuntoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,17 +13,17 @@ import org.springframework.stereotype.Service;
 public class AssuntoService {
 
     @Autowired
-    RepositorioDeAssunto repositorioDeAssunto;
+    AssuntoRepository assuntoRepository;
 
     @Autowired
     ModelMapper modelMapper;
 
     public AssuntoOutputDTO cadastrarAssunto(AssuntoInputDTO novoAssunto) {
-        return toDTO(repositorioDeAssunto.save(toAssunto(novoAssunto)));
+        return toDTO(assuntoRepository.save(toAssunto(novoAssunto)));
     }
 
     public AssuntoOutputDTO buscarAssuntoPorId(Long id) {
-        return toDTO(repositorioDeAssunto.findById(id).orElseThrow(AssuntoNaoEncontradoException::new));
+        return toDTO(assuntoRepository.findById(id).orElseThrow(AssuntoNaoEncontradoException::new));
     }
 
     private AssuntoOutputDTO toDTO(Assunto assunto){

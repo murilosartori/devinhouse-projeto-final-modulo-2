@@ -9,7 +9,7 @@ import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.model.Processo;
 
-public interface RepositorioDeProcessos extends JpaRepository<Processo, Long> {
+public interface ProcessoRepository extends JpaRepository<Processo, Long> {
 	Optional<Processo> findByChaveProcesso(String chaveProcesso);
 
 	List<Processo> findByCdAssunto(Assunto cdAssunto);

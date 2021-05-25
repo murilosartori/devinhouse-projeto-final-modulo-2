@@ -16,7 +16,7 @@ import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
 import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.model.Processo;
-import br.com.devinhouse.grupo5.repository.RepositorioDeProcessos;
+import br.com.devinhouse.grupo5.repository.ProcessoRepository;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -34,7 +34,7 @@ public class ProcessoService {
 	AssuntoService assuntoService;
 
 	@Autowired
-	RepositorioDeProcessos processoRepository;
+  ProcessoRepository processoRepository;
 
 	public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
 		var processo = toProcesso(processoInputDTO);
@@ -153,8 +153,6 @@ public class ProcessoService {
 			throw new AssuntoNaoEncontradoException();
 		}
 		BeanUtils.copyProperties(processoAtualizado, processoIndicado, "id");
-		System.out.println(processoAtualizado);
-		System.out.println(processoIndicado);
 		// TODO: conferir se há alguma informação que deverá ser ignorada além de id
 		processoRepository.save(processoIndicado);
 	}
