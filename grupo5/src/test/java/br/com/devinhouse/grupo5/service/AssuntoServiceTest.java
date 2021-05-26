@@ -1,50 +1,126 @@
 package br.com.devinhouse.grupo5.service;
 
 import br.com.devinhouse.grupo5.domain.exceptions.AssuntoNaoEncontradoException;
+import br.com.devinhouse.grupo5.dto.AssuntoInputDTO;
+import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
+import br.com.devinhouse.grupo5.model.Assunto;
+import br.com.devinhouse.grupo5.repository.AssuntoRepository;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class AssuntoServiceTest {
 
-  @Autowired
-  AssuntoService assuntoService;
+  @InjectMocks
+  private AssuntoService assuntoService;
 
-//  @Autowired
-//  AssuntoRepository assuntoRepository;
+  @Mock
+  private AssuntoRepository assuntoRepository;
 
-  @Test
-  void cadastrarAssunto () {
-    // given
-    // dado que eu tento salvar um assunto
-    // when
-    // quando tentar salvar
-    // then
-    // deve devolver um outputDTO do assunto salvo
+  @Mock
+  private ModelMapper modelMapper;
+
+  @BeforeEach
+  void setUp() {
+    assuntoRepository.deleteAll();
   }
 
   @Test
-  void buscarAssuntoPorIdNaoExistente () {
-    // given
-    //
-    // when
-    // then
-    // AssuntoNaoEncontradoException
-    // assertThrows()
-    //assertThatThrownBy(() -> assuntoService.buscarAssuntoPorId(99L))
-    //  .isInstanceOf(AssuntoNaoEncontradoException.class);
-    Throwable erro = catchThrowable(() -> {
-//      throw new Exception("oi");
+  void cadastrarAssunto() {
 
-      assuntoService.buscarAssuntoPorId(99L);
-    });
+    AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
+            "Teste unitário",
+            Date.valueOf("2021-05-26"),
+            true
+    );
+
+    Assunto assunto = new Assunto(
+            1L,
+            assuntoInputDTO.getDescricao(),
+            assuntoInputDTO.getDtCadastro(),
+            assuntoInputDTO.getFlAtivo()
+    );
+
+    AssuntoOutputDTO assuntoOutputDTO = new AssuntoOutputDTO(
+            assunto.getId(),
+            assunto.getDescricao(),
+            assunto.getDtCadastro(),
+            assunto.getFlAtivo()
+    );
+
+    when(modelMapper.map(assuntoInputDTO, Assunto.class)).thenReturn(assunto);
+    when(assuntoRepository.save(assunto)).thenReturn(assunto);
+    when(modelMapper.map(assunto, AssuntoOutputDTO.class)).thenReturn(assuntoOutputDTO);
+
+    AssuntoOutputDTO expected = assuntoService.cadastrarAssunto(assuntoInputDTO);
+
+    AssertionsForClassTypes.assertThat(expected).isInstanceOf(AssuntoOutputDTO.class);
+  }
+
+  @Test
+  void buscarAssuntoPorIdNaoExistente() {
+    Throwable erro = catchThrowable(() -> assuntoService.buscarAssuntoPorId(1L));
+
     assertThat(erro)
-      .isInstanceOf(AssuntoNaoEncontradoException.class);
-//      .isInstanceOf(Exception.class);
-//        .hasMessageContaining("oi")
+            .isInstanceOf(AssuntoNaoEncontradoException.class);
+  }
+
+  @Test
+  void deveRetornarUmAssuntoQuandoBuscarPorUmIdExistente(){
+
+    ArrayList<Assunto> assuntos = new ArrayList<>();
+
+    AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
+            "Teste unitário",
+            Date.valueOf("2021-05-26"),
+            true
+    );
+
+    Assunto assunto = new Assunto(
+            1L,
+            assuntoInputDTO.getDescricao(),
+            assuntoInputDTO.getDtCadastro(),
+            assuntoInputDTO.getFlAtivo()
+    );
+
+    AssuntoOutputDTO assuntoOutputDTO = new AssuntoOutputDTO(
+            assunto.getId(),
+            assunto.getDescricao(),
+            assunto.getDtCadastro(),
+            assunto.getFlAtivo()
+    );
+
+    when(modelMapper.map(assuntoInputDTO, Assunto.class)).thenReturn(assunto);
+    when(assuntoRepository.save(assunto)).then((Assunto) -> {
+      assuntos.add(assunto);
+      return assunto;
+    });
+    when(modelMapper.map(assunto, AssuntoOutputDTO.class)).thenReturn(assuntoOutputDTO);
+    when(assuntoRepository.findById(assunto.getId())).then((Assunto) -> {
+      Stream<Assunto> assuntoStream = assuntos.stream().filter(assunto1 -> assunto1.getId().equals(assunto.getId()));
+      Optional<Assunto> assuntoBuscado = assuntoStream.findFirst();
+      return assuntoBuscado;
+    });
+
+    assuntoService.cadastrarAssunto(assuntoInputDTO);
+
+    assuntoService.buscarAssuntoPorId(assunto.getId());
+
+    verify(assuntoRepository, times(1)).findById(assunto.getId());
   }
 }
