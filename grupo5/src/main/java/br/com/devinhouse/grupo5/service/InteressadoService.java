@@ -6,18 +6,20 @@ import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.repository.InteressadoRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@AllArgsConstructor
 @Service
 public class InteressadoService {
 
   @Autowired
-  InteressadoRepository interessadoRepository;
+  private final InteressadoRepository interessadoRepository;
 
   @Autowired
-  ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
 
   public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
 
@@ -34,7 +36,7 @@ public class InteressadoService {
 
   public InteressadoOutputDTO buscarInteressadoPeloNuIdentificacao(String valor) {
     return toDTO(
-        interessadoRepository.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
+            interessadoRepository.findByNuIdentificacao(valor).orElseThrow(InteressadoNaoEncontradoException::new));
   }
 
   private InteressadoOutputDTO toDTO(Interessado interessado) {
