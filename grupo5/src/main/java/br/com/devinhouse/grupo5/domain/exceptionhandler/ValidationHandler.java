@@ -91,6 +91,16 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     return exceptionSchema(ex, webRequest, BAD_REQUEST);
   }
 
+  @ExceptionHandler(CpfInvalidoException.class)
+  public ResponseEntity<Object> constraintViolationException(CpfInvalidoException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(DataDeNascimentoInvalidaException.class)
+  public ResponseEntity<Object> constraintViolationException(DataDeNascimentoInvalidaException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
   private ResponseEntity<Object> exceptionSchema(Exception ex, WebRequest webRequest, HttpStatus status){
     var validation = newValidation(ex.getMessage(), status);
     return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);

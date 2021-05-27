@@ -1,7 +1,5 @@
 package br.com.devinhouse.grupo5.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -32,7 +32,7 @@ public class Interessado {
 	@Column(length = 50, nullable = false)
 	private String nuIdentificacao;
 	@Column(nullable = false)
-	private Date dtNascimento;
+	private LocalDate dtNascimento;
 	@Column(nullable = false)
 	private Boolean flAtivo;
 }

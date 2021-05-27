@@ -1,5 +1,7 @@
 package br.com.devinhouse.grupo5.service;
 
+import br.com.devinhouse.grupo5.domain.exceptions.CpfInvalidoException;
+import br.com.devinhouse.grupo5.domain.exceptions.DataDeNascimentoInvalidaException;
 import br.com.devinhouse.grupo5.domain.exceptions.InformacaoJaCadastradaException;
 import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
@@ -10,6 +12,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static br.com.devinhouse.grupo5.util.Validacoes.validarCpf;
+import static br.com.devinhouse.grupo5.util.Validacoes.validarDtNascimento;
+
 
 @AllArgsConstructor
 @Service
@@ -22,6 +28,14 @@ public class InteressadoService {
   private final ModelMapper modelMapper;
 
   public InteressadoOutputDTO cadastrarInteressado(InteressadoInputDTO novoInteressado) {
+
+    if(!validarCpf(novoInteressado.getNuIdentificacao())){
+      throw new CpfInvalidoException();
+    }
+
+    if(!validarDtNascimento(novoInteressado.getDtNascimento())){
+      throw new DataDeNascimentoInvalidaException();
+    }
 
     if (interessadoRepository.findByNuIdentificacao(novoInteressado.getNuIdentificacao()).isPresent()) {
       throw new InformacaoJaCadastradaException("Há um interessado cadastrado com a mesma identificação.");
@@ -46,4 +60,5 @@ public class InteressadoService {
   private Interessado toInteressado(InteressadoInputDTO interessadoInputDTO) {
     return modelMapper.map(interessadoInputDTO, Interessado.class);
   }
+
 }

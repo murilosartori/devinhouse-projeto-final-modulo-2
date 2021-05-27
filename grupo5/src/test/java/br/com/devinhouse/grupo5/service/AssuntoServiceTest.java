@@ -6,7 +6,6 @@ import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
 import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.repository.AssuntoRepository;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,10 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.sql.Date;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -35,17 +32,12 @@ class AssuntoServiceTest {
   @Mock
   private ModelMapper modelMapper;
 
-  @BeforeEach
-  void setUp() {
-    assuntoRepository.deleteAll();
-  }
-
   @Test
   void cadastrarAssunto() {
 
     AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
             "Teste unitário",
-            Date.valueOf("2021-05-26"),
+           LocalDate.parse("2021-05-26"),
             true
     );
 
@@ -83,41 +75,14 @@ class AssuntoServiceTest {
   @Test
   void deveRetornarUmAssuntoQuandoBuscarPorUmIdExistente(){
 
-    ArrayList<Assunto> assuntos = new ArrayList<>();
-
-    AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
+    Assunto assunto = new Assunto(
+            1L,
             "Teste unitário",
-            Date.valueOf("2021-05-26"),
+            LocalDate.parse("2021-05-26"),
             true
     );
 
-    Assunto assunto = new Assunto(
-            1L,
-            assuntoInputDTO.getDescricao(),
-            assuntoInputDTO.getDtCadastro(),
-            assuntoInputDTO.getFlAtivo()
-    );
-
-    AssuntoOutputDTO assuntoOutputDTO = new AssuntoOutputDTO(
-            assunto.getId(),
-            assunto.getDescricao(),
-            assunto.getDtCadastro(),
-            assunto.getFlAtivo()
-    );
-
-    when(modelMapper.map(assuntoInputDTO, Assunto.class)).thenReturn(assunto);
-    when(assuntoRepository.save(assunto)).then((Assunto) -> {
-      assuntos.add(assunto);
-      return assunto;
-    });
-    when(modelMapper.map(assunto, AssuntoOutputDTO.class)).thenReturn(assuntoOutputDTO);
-    when(assuntoRepository.findById(assunto.getId())).then((Assunto) -> {
-      Stream<Assunto> assuntoStream = assuntos.stream().filter(assunto1 -> assunto1.getId().equals(assunto.getId()));
-      Optional<Assunto> assuntoBuscado = assuntoStream.findFirst();
-      return assuntoBuscado;
-    });
-
-    assuntoService.cadastrarAssunto(assuntoInputDTO);
+    when(assuntoRepository.findById(any())).thenReturn(Optional.of(assunto));
 
     assuntoService.buscarAssuntoPorId(assunto.getId());
 
