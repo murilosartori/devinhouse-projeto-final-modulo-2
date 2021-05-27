@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import java.util.Date;
 public class AssuntoInputDTO {
 
     private String descricao;
-    private Date dtCadastro;
+    private LocalDate dtCadastro;
     private Boolean flAtivo;
 
 }

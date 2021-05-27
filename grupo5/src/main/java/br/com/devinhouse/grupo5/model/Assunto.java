@@ -1,6 +1,6 @@
 package br.com.devinhouse.grupo5.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +29,7 @@ public class Assunto {
 	@Column(length = 250, nullable = false)
 	private String descricao;
   @Column(nullable = false)
-	private Date dtCadastro;
+	private LocalDate dtCadastro;
 	@Column(nullable = false)
 	private Boolean flAtivo;
 }

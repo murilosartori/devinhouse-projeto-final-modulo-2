@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class InteressadoOutputDTO {
     private Long id;
     private String nmInteressado;
     private String nuIdentificacao;
-    private Date dtNascimento;
+    private LocalDate dtNascimento;
     private Boolean flAtivo;
 
 }
