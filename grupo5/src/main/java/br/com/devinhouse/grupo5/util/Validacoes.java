@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 public class Validacoes {
 
+    private Validacoes() {}
+
     public static boolean validarCpf(String cpf) {
         var validadorDeCpf = new int[11];
         var primeiroDigitoVerificador = 0;
