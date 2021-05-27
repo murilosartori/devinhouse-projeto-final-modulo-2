@@ -16,8 +16,6 @@ import org.modelmapper.ModelMapper;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -41,7 +39,7 @@ class AssuntoServiceTest {
   }
 
   @Test
-  void cadastrarAssunto() {
+  void cadastrarAssuntoComCamposValidos() {
 
     AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
             "Teste unitário",
@@ -111,11 +109,7 @@ class AssuntoServiceTest {
       return assunto;
     });
     when(modelMapper.map(assunto, AssuntoOutputDTO.class)).thenReturn(assuntoOutputDTO);
-    when(assuntoRepository.findById(assunto.getId())).then((Assunto) -> {
-      Stream<Assunto> assuntoStream = assuntos.stream().filter(assunto1 -> assunto1.getId().equals(assunto.getId()));
-      Optional<Assunto> assuntoBuscado = assuntoStream.findFirst();
-      return assuntoBuscado;
-    });
+    when(assuntoRepository.findById(assunto.getId())).then((Assunto) -> assuntos.stream().findFirst());
 
     assuntoService.cadastrarAssunto(assuntoInputDTO);
 

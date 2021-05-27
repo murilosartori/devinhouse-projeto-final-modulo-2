@@ -1,11 +1,8 @@
 package br.com.devinhouse.grupo5.service;
 
 import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
-import br.com.devinhouse.grupo5.dto.AssuntoInputDTO;
-import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
-import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.model.Interessado;
 import br.com.devinhouse.grupo5.repository.InteressadoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +15,6 @@ import org.modelmapper.ModelMapper;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -104,10 +99,8 @@ public class InteressadoServiceTest {
             return interessado;
         });
         when(modelMapper.map(interessado, InteressadoOutputDTO.class)).thenReturn(interessadoOutputDTO);
-        when(interessadoRepository.findByNuIdentificacao(interessado.getNuIdentificacao())).then((Interessado) -> {
-            Stream<Interessado> interessadoStream = interessados.stream().filter(value -> value.getNuIdentificacao().equals(interessado.getNuIdentificacao()));
-            return interessadoStream.findFirst();
-        });
+
+        when(interessadoRepository.findByNuIdentificacao(interessado.getNuIdentificacao())).then((Interessado) -> interessados.stream().findFirst());
 
         interessadoService.cadastrarInteressado(interessadoInputDTO);
 
@@ -156,10 +149,8 @@ public class InteressadoServiceTest {
             return interessado;
         });
         when(modelMapper.map(interessado, InteressadoOutputDTO.class)).thenReturn(interessadoOutputDTO);
-        when(interessadoRepository.findById(interessado.getId())).then((Interessado) -> {
-            Stream<Interessado> interessadoStream = interessados.stream().filter(value -> value.getId().equals(interessado.getId()));
-            return interessadoStream.findFirst();
-        });
+
+        when(interessadoRepository.findById(interessado.getId())).then((Interessado) -> interessados.stream().findFirst());
 
         interessadoService.cadastrarInteressado(interessadoInputDTO);
 
