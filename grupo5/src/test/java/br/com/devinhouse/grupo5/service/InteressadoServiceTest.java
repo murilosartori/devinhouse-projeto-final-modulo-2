@@ -1,6 +1,7 @@
 package br.com.devinhouse.grupo5.service;
 
 import br.com.devinhouse.grupo5.domain.exceptions.CpfInvalidoException;
+import br.com.devinhouse.grupo5.domain.exceptions.CpfJaExistenteException;
 import br.com.devinhouse.grupo5.domain.exceptions.DataDeNascimentoInvalidaException;
 import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
@@ -59,6 +60,33 @@ class InteressadoServiceTest {
         assertThat(interessadoService.cadastrarInteressado(interessadoInputDTO)) // Then
           .isInstanceOf(InteressadoOutputDTO.class);
         verify(interessadoRepository, times(1)).save(interessado);
+    }
+
+    @Test
+    void deveRetornarCpfJaCadastradoException(){
+
+        InteressadoInputDTO interessadoInputDTO = new InteressadoInputDTO(
+                "Fulano",
+                "61201446090",
+                LocalDate.parse("2000-12-12"),
+                true
+        );
+
+        Interessado interessado = new Interessado(
+                1L,
+                interessadoInputDTO.getNmInteressado(),
+                interessadoInputDTO.getNuIdentificacao(),
+                interessadoInputDTO.getDtNascimento(),
+                interessadoInputDTO.getFlAtivo()
+        );
+
+        when(interessadoRepository.findByNuIdentificacao(any())).thenReturn(Optional.of(interessado));
+
+        Throwable error = catchThrowable(()->
+        interessadoService.cadastrarInteressado(interessadoInputDTO)
+                );
+
+        assertThat(error).isInstanceOf(CpfJaExistenteException.class);
     }
 
     @Test

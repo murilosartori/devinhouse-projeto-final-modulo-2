@@ -105,6 +105,8 @@ public class ProcessoService {
 				.orElseThrow(() -> new ProcessoNaoEncontradoException(id));
 		var processoAtualizado = toProcesso(processoInputDTO);
 
+		System.out.println(processoAtualizado.toString());
+		System.out.println(processoIndicado.toString());
 		if(!processoAtualizado.getNuProcesso().equals(processoIndicado.getNuProcesso())) {
 
 			Boolean existNuProcesso = processoRepository.existsByNuProcesso(processoAtualizado.getNuProcesso());
