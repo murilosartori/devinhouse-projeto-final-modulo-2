@@ -31,7 +31,6 @@ class ValidationHandlerTest {
 
     @Test
     void cpfExistenteHandler() {
-     validationHandler.cpfExistenteHandler(new CpfJaExistenteException("O CPF já existe!"), WebRequest())
     }
 
     @Test

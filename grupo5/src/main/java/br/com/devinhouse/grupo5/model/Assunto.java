@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,13 +24,18 @@ import lombok.Setter;
 @Getter
 @Table(name = "Assunto")
 public class Assunto {
+
+	@NotNull
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(length = 250, nullable = false)
+	@NotNull
+	@Column(length = 250)
 	private String descricao;
-  @Column(nullable = false)
+	@NotNull
+	@Column
 	private LocalDate dtCadastro;
-	@Column(nullable = false)
+	@NotNull
+	@Column
 	private Boolean flAtivo;
 }
