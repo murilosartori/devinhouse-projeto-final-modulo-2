@@ -25,37 +25,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class InteressadoControllerTest {
 
   @Autowired
-	private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-	@MockBean
-	private InteressadoService service;
+  @MockBean
+  private InteressadoService service;
 
   private final String BASE_URL = "/v1/interessado";
-	static private ObjectMapper objectMapper;
-	static private InteressadoInputDTO interessadoInput;
-	static private InteressadoOutputDTO interessadoOutput;
+  static private ObjectMapper objectMapper;
+  static private InteressadoInputDTO interessadoInput;
+  static private InteressadoOutputDTO interessadoOutput;
   static private String interessadoOutputString;
   @BeforeAll
   static void setUp() throws JsonProcessingException {
-  objectMapper = new ObjectMapper();
-  interessadoInput = new InteressadoInputDTO();
-  interessadoOutput = new InteressadoOutputDTO();
-  interessadoOutputString = objectMapper.writeValueAsString(interessadoOutput);
+    objectMapper = new ObjectMapper();
+    interessadoInput = new InteressadoInputDTO();
+    interessadoOutput = new InteressadoOutputDTO();
+    interessadoOutputString = objectMapper.writeValueAsString(interessadoOutput);
   }
 
   @Test
   void cadastrarAssuntoDeveRetornarInteressadoOutputComoJsonEHttpCreated () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = post(BASE_URL)
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .content(objectMapper.writeValueAsString(interessadoInput));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(interessadoInput));
 
     // When
     when(service.cadastrarInteressado(any())).thenReturn(interessadoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(interessadoOutputString))
-      .andExpect(status().isCreated());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(interessadoOutputString))
+            .andExpect(status().isCreated());
   }
 
   @Test
@@ -65,9 +65,9 @@ class InteressadoControllerTest {
     // When
     when(service.buscarInteressadoPeloId(1L)).thenReturn(interessadoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(interessadoOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(interessadoOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -78,8 +78,8 @@ class InteressadoControllerTest {
     // When
     when(service.buscarInteressadoPeloNuIdentificacao(TESTE_DO_PARAMETRO)).thenReturn(interessadoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(interessadoOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(interessadoOutputString))
+            .andExpect(status().isOk());
   }
 }

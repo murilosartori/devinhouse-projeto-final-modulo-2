@@ -25,10 +25,10 @@ class AssuntoControllerTest {
   private final String BASE_URL = "/v1/assunto";
 
   @Autowired
-	private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-	@MockBean
-	private AssuntoService service;
+  @MockBean
+  private AssuntoService service;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -39,14 +39,14 @@ class AssuntoControllerTest {
     var assuntoInput = new AssuntoInputDTO();
     var assuntoOutput = new AssuntoOutputDTO();
     MockHttpServletRequestBuilder request = post(BASE_URL)
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .content(objectMapper.writeValueAsString(assuntoInput));
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsString(assuntoInput));
 
     // When
     when(service.cadastrarAssunto(any())).thenReturn(assuntoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(status().isCreated());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isCreated());
   }
 
   @Test
@@ -56,7 +56,7 @@ class AssuntoControllerTest {
     // When
     when(service.buscarAssuntoPorId(1L)).thenReturn(new AssuntoOutputDTO());
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk());
   }
 }
