@@ -1,10 +1,8 @@
 package br.com.devinhouse.grupo5.domain.exceptionhandler;
 
-import br.com.devinhouse.grupo5.domain.exceptions.CpfJaExistenteException;
-import br.com.devinhouse.grupo5.domain.exceptions.ProcessoNaoEncontradoException;
+import br.com.devinhouse.grupo5.domain.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-// import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,10 +14,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class ValidationHandler extends ResponseEntityExceptionHandler {
@@ -29,36 +31,72 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
-      HttpStatus status, WebRequest request) {
+                                                                HttpStatus status, WebRequest request) {
 
-    Validation validation = newValidation("Um ou mais campos estão incorretos. Corrija e tente novamente", status);
+    var validation = newValidation("Um ou mais campos estão incorretos. Corrija e tente novamente", status);
 
     new Locale("pt-BR");
     List<Validation.Campo> campos = ex.getBindingResult().getAllErrors().stream()
-        .map(e -> new Validation.Campo(((FieldError) e).getField(),
-            messageSource.getMessage(e, LocaleContextHolder.getLocale()))
-        // messageSource.getMessage(e, new Locale("pt-BR")))
-        ).collect(Collectors.toList());
+            .map(e -> new Validation.Campo(((FieldError) e).getField(),
+                            messageSource.getMessage(e, LocaleContextHolder.getLocale()))
+                    // messageSource.getMessage(e, new Locale("pt-BR")))
+            ).collect(Collectors.toList());
 
     validation.setCampos(campos);
 
     return super.handleExceptionInternal(ex, validation, headers, status, request);
   }
 
+
+  //TODO:Exception e ExceptionHandler 3 - Não poderá ser cadastrado um novo processo com interessados inativos;
+  //TODO:Exception e ExceptionHandler 4 - Não poderá ser cadastrado um novo processo com assuntos inativos;
+  //TODO:Exception e ExceptionHandler 5 - Não poderá ser cadastrado um novo processo com interessados inesistentes no sistema;
+  //TODO:Exception e ExceptionHandler 6 - Não poderá ser cadastrado um novo processo com assuntos inesistentes no sistema;
+  //TODO:Exception e ExceptionHandler 7 - Não poderá ser cadastrado um novo interessado com um id já existente;
+  //TODO:Exception e ExceptionHandler 8 - Não poderá ser cadastrado um novo interessado com um mesmo documento de indentificação;
+  //TODO:Exception e ExceptionHandler 9 - Não poderá ser cadastrado um novo interessado com um documento de identificação inválido;
+
   @ExceptionHandler(CpfJaExistenteException.class)
   public ResponseEntity<Object> cpfExistenteHandler(CpfJaExistenteException ex, WebRequest webRequest) {
-
-    var status = HttpStatus.BAD_REQUEST;
-
-    var validation = newValidation(ex.getMessage(), status);
-    return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
   @ExceptionHandler(ProcessoNaoEncontradoException.class)
   public ResponseEntity<Object> pessoaNaoEncontradaHandler(ProcessoNaoEncontradoException ex, WebRequest webRequest) {
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
+  }
 
-    var status = HttpStatus.NOT_FOUND;
+  @ExceptionHandler(AssuntoNaoEncontradoException.class)
+  public ResponseEntity<Object> assuntoNaoEncontradoHandler(AssuntoNaoEncontradoException ex, WebRequest webRequest) {
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
+  }
 
+  @ExceptionHandler(NuProcessoJaCadastradoException.class)
+  public ResponseEntity<Object> nuProcessoJaCadastradoException(NuProcessoJaCadastradoException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(InteressadoNaoEncontradoException.class)
+  public ResponseEntity<Object> interessadoNaoEncontradoHandler(InteressadoNaoEncontradoException ex, WebRequest webRequest) {
+    return exceptionSchema(ex, webRequest, NOT_FOUND);
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity<Object> constraintViolationException(ConstraintViolationException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(CpfInvalidoException.class)
+  public ResponseEntity<Object> constraintViolationException(CpfInvalidoException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(DataDeNascimentoInvalidaException.class)
+  public ResponseEntity<Object> constraintViolationException(DataDeNascimentoInvalidaException ex, WebRequest webRequest){
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  private ResponseEntity<Object> exceptionSchema(Exception ex, WebRequest webRequest, HttpStatus status){
     var validation = newValidation(ex.getMessage(), status);
     return super.handleExceptionInternal(ex, validation, new HttpHeaders(), status, webRequest);
   }

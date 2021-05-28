@@ -2,56 +2,30 @@ package br.com.devinhouse.grupo5.dto;
 
 import lombok.*;
 
-//@Getter
+import javax.validation.constraints.NotNull;
+
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class ProcessoInputDTO {
 
-    private Long nuProcesso;
-    private String sgOrgaoProcesso;
-    private String nuAnoProcesso;
-    private String descricao;
-    private String cdAssunto;
-    private String descricaoAssunto;
-    private Integer cdInteressado;
-    private String nmInteressado;
-    private String chaveProcesso = this.nuAnoProcesso;
+  @NotNull
+  private Long nuProcesso;
+  @NotNull
+  private String sgOrgaoSetor;
+  @NotNull
+  private String nuAno;
+  @NotNull
+  private String descricao;
+  @NotNull
+  private Long cdAssunto;
+  @NotNull
+  private Long cdInteressado;
 
-    public Long getNuProcesso() {
-        return nuProcesso;
-    }
+  public String getChaveProcesso() {
+    return sgOrgaoSetor + " " + nuProcesso + "/" + nuAno;
+  }
 
-    public String getSgOrgaoProcesso() {
-        return sgOrgaoProcesso;
-    }
-
-    public String getNuAnoProcesso() {
-        return nuAnoProcesso;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public String getCdAssunto() {
-        return cdAssunto;
-    }
-
-    public String getDescricaoAssunto() {
-        return descricaoAssunto;
-    }
-
-    public Integer getCdInteressado() {
-        return cdInteressado;
-    }
-
-    public String getNmInteressado() {
-        return nmInteressado;
-    }
-
-    public String getChaveProcesso() {
-        return sgOrgaoProcesso + " " + nuProcesso + "/" + nuAnoProcesso;
-    }
 }
