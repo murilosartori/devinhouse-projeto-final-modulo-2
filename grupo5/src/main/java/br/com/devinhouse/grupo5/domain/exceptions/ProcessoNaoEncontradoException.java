@@ -10,6 +10,4 @@ public class ProcessoNaoEncontradoException extends RuntimeException {
     super(String.format("O processo pelo qual buscavas, chave %s, não foi encontrado", chaveProcesso));
   }
 
-  public ProcessoNaoEncontradoException(){super("O processo pelo qual buscavas não foi encontrado");}
-
 }

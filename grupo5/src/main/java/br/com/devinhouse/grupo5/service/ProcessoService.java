@@ -34,7 +34,7 @@ public class ProcessoService {
 	AssuntoService assuntoService;
 
 	@Autowired
-  ProcessoRepository processoRepository;
+	ProcessoRepository processoRepository;
 
 	public ProcessoOutputDTO salvarProcesso(ProcessoInputDTO processoInputDTO) {
 		var processo = toProcesso(processoInputDTO);
@@ -105,8 +105,6 @@ public class ProcessoService {
 				.orElseThrow(() -> new ProcessoNaoEncontradoException(id));
 		var processoAtualizado = toProcesso(processoInputDTO);
 
-		System.out.println(processoAtualizado.toString());
-		System.out.println(processoIndicado.toString());
 		if(!processoAtualizado.getNuProcesso().equals(processoIndicado.getNuProcesso())) {
 
 			Boolean existNuProcesso = processoRepository.existsByNuProcesso(processoAtualizado.getNuProcesso());
