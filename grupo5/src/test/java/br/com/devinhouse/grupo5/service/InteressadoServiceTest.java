@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,14 +35,13 @@ class InteressadoServiceTest {
 
     @Test
     void verificarOCadastroDeUmInteressadoComInformacoesValidas(){
-
+        // Given
         InteressadoInputDTO interessadoInputDTO = new InteressadoInputDTO(
                 "Fulano",
                 "61201446090",
                 LocalDate.parse("2000-12-12"),
                 true
         );
-
         Interessado interessado = new Interessado(
                 1L,
                 interessadoInputDTO.getNmInteressado(),
@@ -51,95 +49,89 @@ class InteressadoServiceTest {
                 interessadoInputDTO.getDtNascimento(),
                 interessadoInputDTO.getFlAtivo()
         );
-
-        when(modelMapper.map(interessadoInputDTO, Interessado.class)).thenReturn(interessado);
-        when(interessadoRepository.save(interessado)).thenReturn(interessado);
-
-        InteressadoOutputDTO interessadoOutputDTO = interessadoService.cadastrarInteressado(interessadoInputDTO);
-
-        assertAll(
-                () -> verify(interessadoRepository).save(interessado)
-        );
+        when(modelMapper.map(any(InteressadoInputDTO.class), eq(Interessado.class)))
+          .thenReturn(interessado);
+        when(interessadoRepository.save(interessado))
+          .thenReturn(interessado);
+        when(modelMapper.map(any(Interessado.class), eq(InteressadoOutputDTO.class)))
+          .thenReturn(new InteressadoOutputDTO());
+        // When
+        assertThat(interessadoService.cadastrarInteressado(interessadoInputDTO)) // Then
+          .isInstanceOf(InteressadoOutputDTO.class);
+        verify(interessadoRepository, times(1)).save(interessado);
     }
 
     @Test
     void verificarOCadastroDeUmInteressadoComCPFInvalido(){
-
+        // Given
         InteressadoInputDTO interessadoInputDTO = new InteressadoInputDTO(
                 "Fulano",
                 "12345678910",
                 LocalDate.parse("2000-12-12"),
                 true
         );
-
-        Throwable exception = catchThrowable(() -> {interessadoService.cadastrarInteressado(interessadoInputDTO);});
-
-        assertThat(exception).isInstanceOf(CpfInvalidoException.class);
+        // When
+        Throwable exception = catchThrowable(() -> interessadoService.cadastrarInteressado(interessadoInputDTO));
+        assertThat(exception) // Then
+          .isInstanceOf(CpfInvalidoException.class);
     }
 
     @Test
     void verificarOCadastroDeUmInteressadoComDtNascimentoInvalido(){
-
+        // Given
         InteressadoInputDTO interessadoInputDTO = new InteressadoInputDTO(
                 "Fulano",
                 "10736794034",
                 LocalDate.parse("2021-12-12"),
                 true
         );
-
-        Throwable exception = catchThrowable(() -> {interessadoService.cadastrarInteressado(interessadoInputDTO);});
-
-        assertThat(exception).isInstanceOf(DataDeNascimentoInvalidaException.class);
+        // When
+        Throwable exception = catchThrowable(() -> interessadoService.cadastrarInteressado(interessadoInputDTO));
+        assertThat(exception) // Then
+          .isInstanceOf(DataDeNascimentoInvalidaException.class);
     }
 
     @Test
-    void deveRetornarUmInteressadoQuandoBuscarPorUmNuIdentificacaoExistente(){
-
-        Interessado interessado = new Interessado(
-                1L,
-                "Fulano",
-                "25191038096",
-                LocalDate.parse("2000-12-12"),
-                true
-        );
-
-        when(interessadoRepository.findByNuIdentificacao(any())).thenReturn(Optional.of(interessado));
-
-        interessadoService.buscarInteressadoPeloNuIdentificacao(interessado.getNuIdentificacao());
-
-        verify(interessadoRepository, times(1)).findByNuIdentificacao(interessado.getNuIdentificacao());
+    void deveRetornarUm(){
+        // Given
+        when(interessadoRepository.findByNuIdentificacao(any()))
+          .thenReturn(Optional.of(new Interessado()));
+        when(modelMapper.map(any(Interessado.class), eq(InteressadoOutputDTO.class)))
+          .thenReturn(new InteressadoOutputDTO());
+        // When
+        assertThat(interessadoService.buscarInteressadoPeloNuIdentificacao(any())) // Then
+            .isInstanceOf(InteressadoOutputDTO.class);
+        verify(interessadoRepository, times(1))
+          .findByNuIdentificacao(any());
     }
 
     @Test
     void deveRetornarErroQuandoBuscarPorUmNumeroDeIdentificacaoInexistente(){
+        // when
         Throwable exception = catchThrowable(() -> interessadoService.buscarInteressadoPeloNuIdentificacao("12345678910"));
-
-        assertThat(exception).isInstanceOf(InteressadoNaoEncontradoException.class);
+        assertThat(exception) // Then
+          .isInstanceOf(InteressadoNaoEncontradoException.class);
     }
 
     @Test
     void deveRetornarUmInteressadoQuandoBuscarPorUmIdExistente(){
-
-        Interessado interessado = new Interessado(
-                1L,
-                "Fulano",
-                "25191038096",
-                LocalDate.parse("2000-12-12"),
-                true
-        );
-
-        when(interessadoRepository.findById(any())).thenReturn(Optional.of(interessado));
-
-        interessadoService.buscarInteressadoPeloId(interessado.getId());
-
-        verify(interessadoRepository, times(1)).findById(interessado.getId());
+        // Given
+        when(interessadoRepository.findById(any()))
+          .thenReturn(Optional.of(new Interessado()));
+        when(modelMapper.map(any(Interessado.class), eq(InteressadoOutputDTO.class)))
+          .thenReturn(new InteressadoOutputDTO());
+        // When
+        assertThat(interessadoService.buscarInteressadoPeloId(any())) // Then
+          .isInstanceOf(InteressadoOutputDTO.class);
+        verify(interessadoRepository, times(1)).findById(any());
     }
 
     @Test
     void deveRetornarErroQuandoBuscarPorUmIdInexistente(){
+        // When
         Throwable exception = catchThrowable(() -> interessadoService.buscarInteressadoPeloId(1L));
-
-        assertThat(exception).isInstanceOf(InteressadoNaoEncontradoException.class);
+        assertThat(exception) // Then
+          .isInstanceOf(InteressadoNaoEncontradoException.class);
     }
 
 }

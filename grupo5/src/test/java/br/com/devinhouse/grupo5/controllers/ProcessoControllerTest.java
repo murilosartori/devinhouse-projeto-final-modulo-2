@@ -5,6 +5,7 @@ import br.com.devinhouse.grupo5.dto.ProcessoOutputDTO;
 import br.com.devinhouse.grupo5.service.ProcessoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,34 +25,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProcessoController.class)
 class ProcessoControllerTest {
 
-  ProcessoControllerTest () throws JsonProcessingException {
-  }
-
-  private final String BASE_URL = "/v1/processo";
-
   @Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
 	private ProcessoService service;
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
-  private final ProcessoInputDTO processoInput = new ProcessoInputDTO();
-  private final ProcessoOutputDTO processoOutput = new ProcessoOutputDTO();
-  private final List<ProcessoOutputDTO> listaDeProcessosOutput = List.of(processoOutput);
-  private final String listaDeProcessosOutputString = objectMapper.writeValueAsString(listaDeProcessosOutput);
-  private final String processoInputString = objectMapper.writeValueAsString(processoInput);
-  private final String processoOutputString = objectMapper.writeValueAsString(processoOutput);
-  private final long TESTE_PARAMETRO_LONG = 1L;
+  private final Long TESTE_PARAMETRO_LONG = 1L;
   private final String TESTE_PARAMETRO_STRING = "testedoparametro";
+  private final String BASE_URL = "/v1/processo";
+	static private ObjectMapper objectMapper;
+  static private ProcessoInputDTO processoInput;
+  static private ProcessoOutputDTO processoOutput;
+  static private List<ProcessoOutputDTO> listaDeProcessosOutput;
+  static private String listaDeProcessosOutputString;
+  static private String processoInputString;
+  static private String processoOutputString;
+
+  @BeforeAll
+  static void setUp() throws JsonProcessingException {
+  objectMapper = new ObjectMapper();
+  processoInput = new ProcessoInputDTO();
+  processoOutput = new ProcessoOutputDTO();
+  listaDeProcessosOutput = List.of(processoOutput);
+  listaDeProcessosOutputString = objectMapper.writeValueAsString(listaDeProcessosOutput);
+  processoInputString = objectMapper.writeValueAsString(processoInput);
+  processoOutputString = objectMapper.writeValueAsString(processoOutput);
+  }
 
   @Test
-  void criaProcesso () throws Exception {
+  void criaProcessoDeveRetornarProcessoOutputComoJsonEHttpCreated () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = post(BASE_URL)
       .contentType(MediaType.APPLICATION_JSON_VALUE)
       .content(processoInputString);
-
     // When
     when(service.salvarProcesso(any())).thenReturn(processoOutput);
     this.mockMvc.perform(request) // Then
@@ -61,7 +68,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void listaProcessos () throws Exception {
+  void listaProcessosDeveRetornarListaDeProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = get(BASE_URL);
     // When
@@ -73,7 +80,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void buscaUmProcesso () throws Exception {
+  void buscaUmProcessoDeveRetornarProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = get(BASE_URL+"/id/"+TESTE_PARAMETRO_LONG);
     // When
@@ -85,7 +92,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void buscaUmProcessoPorChave () throws Exception {
+  void buscaUmProcessoPorChaveDeveRetornarProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = get(BASE_URL+"/chaveprocesso?q="+TESTE_PARAMETRO_STRING);
     // When
@@ -97,7 +104,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void buscaUmProcessoPorInteressado () throws Exception {
+  void buscaUmProcessoPorInteressadoDeveRetornarListaDeProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = get(BASE_URL+"/cdinteressado?q="+TESTE_PARAMETRO_LONG);
     // When
@@ -109,7 +116,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void buscaUmProcessoPorAssunto () throws Exception {
+  void buscaUmProcessoPorAssuntoDeveRetornarListaDeProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = get(BASE_URL+"/cdassunto?q="+TESTE_PARAMETRO_LONG);
     // When
@@ -121,7 +128,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void atualizaProcesso () throws Exception {
+  void atualizaProcessoDeveRetornarHttpNoContent () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = put(BASE_URL+"/id/"+TESTE_PARAMETRO_LONG)
       .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -132,7 +139,7 @@ class ProcessoControllerTest {
   }
 
   @Test
-  void deletaProcesso () throws Exception {
+  void deletaProcessoDeveRetornarProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = delete(BASE_URL+"/id/"+TESTE_PARAMETRO_LONG)
       .contentType(MediaType.APPLICATION_JSON_VALUE)

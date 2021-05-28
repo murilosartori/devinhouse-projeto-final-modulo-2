@@ -18,7 +18,7 @@ public class Processo {
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	@Column(nullable = false)
-	private Integer nuProcesso;
+	private Long nuProcesso;
 	@Column(length = 4, nullable = false)
 	private String sgOrgaoSetor;
 	@Column(length = 4, nullable = false)
@@ -36,7 +36,7 @@ public class Processo {
 	private Interessado cdInteressado;
 
 	@Builder(toBuilder = true)
-	public Processo(Integer nuProcesso, String sgOrgaoSetor, String nuAno, String descricao, Assunto cdAssunto,
+	public Processo(Long nuProcesso, String sgOrgaoSetor, String nuAno, String descricao, Assunto cdAssunto,
 					Interessado cdInteressado) {
 		this.nuProcesso = nuProcesso;
 		this.sgOrgaoSetor = sgOrgaoSetor;
