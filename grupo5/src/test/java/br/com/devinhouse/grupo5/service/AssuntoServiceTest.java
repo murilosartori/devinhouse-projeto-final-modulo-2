@@ -5,7 +5,6 @@ import br.com.devinhouse.grupo5.dto.AssuntoInputDTO;
 import br.com.devinhouse.grupo5.dto.AssuntoOutputDTO;
 import br.com.devinhouse.grupo5.model.Assunto;
 import br.com.devinhouse.grupo5.repository.AssuntoRepository;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +33,7 @@ class AssuntoServiceTest {
 
   @Test
   void cadastrarAssunto() {
-
+    // Given
     AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
             "Teste unitário",
            LocalDate.parse("2021-05-26"),
@@ -58,34 +57,39 @@ class AssuntoServiceTest {
     when(modelMapper.map(assuntoInputDTO, Assunto.class)).thenReturn(assunto);
     when(assuntoRepository.save(assunto)).thenReturn(assunto);
     when(modelMapper.map(assunto, AssuntoOutputDTO.class)).thenReturn(assuntoOutputDTO);
-
+    // When
     AssuntoOutputDTO expected = assuntoService.cadastrarAssunto(assuntoInputDTO);
 
-    AssertionsForClassTypes.assertThat(expected).isInstanceOf(AssuntoOutputDTO.class);
+    assertThat(expected) // Then
+      .isInstanceOf(AssuntoOutputDTO.class);
+    verify(assuntoRepository, times(1))
+      .save(assunto);
   }
 
   @Test
   void buscarAssuntoPorIdNaoExistente() {
+    // When
     Throwable erro = catchThrowable(() -> assuntoService.buscarAssuntoPorId(1L));
-
-    assertThat(erro)
+    assertThat(erro) // Then
             .isInstanceOf(AssuntoNaoEncontradoException.class);
   }
 
   @Test
   void deveRetornarUmAssuntoQuandoBuscarPorUmIdExistente(){
-
+    // Given
     Assunto assunto = new Assunto(
             1L,
             "Teste unitário",
             LocalDate.parse("2021-05-26"),
             true
     );
-
     when(assuntoRepository.findById(any())).thenReturn(Optional.of(assunto));
-
-    assuntoService.buscarAssuntoPorId(assunto.getId());
-
-    verify(assuntoRepository, times(1)).findById(assunto.getId());
+    when(modelMapper.map(assunto, AssuntoOutputDTO.class))
+      .thenReturn(new AssuntoOutputDTO());
+    // When
+    assertThat(assuntoService.buscarAssuntoPorId(assunto.getId())) // Then
+      .isInstanceOf(AssuntoOutputDTO.class);
+    verify(assuntoRepository, times(1))
+      .findById(assunto.getId());
   }
 }
