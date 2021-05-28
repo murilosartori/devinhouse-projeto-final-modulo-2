@@ -3,6 +3,7 @@ package br.com.devinhouse.grupo5.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -14,23 +15,30 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "Processos")
 public class Processo {
 
+	@NotNull
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	@Column(nullable = false)
+	@NotNull
+	@Column
 	private Long nuProcesso;
-	@Column(length = 4, nullable = false)
+	@NotNull
+	@Column(length = 4)
 	private String sgOrgaoSetor;
-	@Column(length = 4, nullable = false)
+	@NotNull
+	@Column(length = 4)
 	private String nuAno;
-	@Column(length = 45, nullable = false)
+	@NotNull
+	@Column(length = 45)
 	private String chaveProcesso;
-	@Column(length = 250, nullable = false)
+	@NotNull
+	@Column(length = 250)
 	private String descricao;
-	//FIXME: Tirei temporariamente o impedimento à definição como nulo para testar a ferramenta
+	@NotNull
 	@JoinColumn(name = "Assunto_idAssunto_id", referencedColumnName = "id")
 	@ManyToOne
 	private Assunto cdAssunto;
+	@NotNull
 	@JoinColumn(name = "Interessado_idInteressado_id", referencedColumnName = "id")
 	@ManyToOne
 	private Interessado cdInteressado;

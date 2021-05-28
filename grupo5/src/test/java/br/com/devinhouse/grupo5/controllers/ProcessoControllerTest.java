@@ -26,15 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProcessoControllerTest {
 
   @Autowired
-	private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-	@MockBean
-	private ProcessoService service;
+  @MockBean
+  private ProcessoService service;
 
   private final Long TESTE_PARAMETRO_LONG = 1L;
   private final String TESTE_PARAMETRO_STRING = "testedoparametro";
   private final String BASE_URL = "/v1/processo";
-	static private ObjectMapper objectMapper;
+  static private ObjectMapper objectMapper;
   static private ProcessoInputDTO processoInput;
   static private ProcessoOutputDTO processoOutput;
   static private List<ProcessoOutputDTO> listaDeProcessosOutput;
@@ -44,27 +44,27 @@ class ProcessoControllerTest {
 
   @BeforeAll
   static void setUp() throws JsonProcessingException {
-  objectMapper = new ObjectMapper();
-  processoInput = new ProcessoInputDTO();
-  processoOutput = new ProcessoOutputDTO();
-  listaDeProcessosOutput = List.of(processoOutput);
-  listaDeProcessosOutputString = objectMapper.writeValueAsString(listaDeProcessosOutput);
-  processoInputString = objectMapper.writeValueAsString(processoInput);
-  processoOutputString = objectMapper.writeValueAsString(processoOutput);
+    objectMapper = new ObjectMapper();
+    processoInput = new ProcessoInputDTO();
+    processoOutput = new ProcessoOutputDTO();
+    listaDeProcessosOutput = List.of(processoOutput);
+    listaDeProcessosOutputString = objectMapper.writeValueAsString(listaDeProcessosOutput);
+    processoInputString = objectMapper.writeValueAsString(processoInput);
+    processoOutputString = objectMapper.writeValueAsString(processoOutput);
   }
 
   @Test
   void criaProcessoDeveRetornarProcessoOutputComoJsonEHttpCreated () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = post(BASE_URL)
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .content(processoInputString);
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(processoInputString);
     // When
     when(service.salvarProcesso(any())).thenReturn(processoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(processoOutputString))
-      .andExpect(status().isCreated());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(processoOutputString))
+            .andExpect(status().isCreated());
   }
 
   @Test
@@ -74,9 +74,9 @@ class ProcessoControllerTest {
     // When
     when(service.buscarTodosProcessos()).thenReturn(listaDeProcessosOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(listaDeProcessosOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(listaDeProcessosOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -86,9 +86,9 @@ class ProcessoControllerTest {
     // When
     when(service.buscarUmProcesso(TESTE_PARAMETRO_LONG)).thenReturn(processoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(processoOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(processoOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -98,9 +98,9 @@ class ProcessoControllerTest {
     // When
     when(service.buscarUmProcessoPorChave(TESTE_PARAMETRO_STRING)).thenReturn(processoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(processoOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(processoOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -110,9 +110,9 @@ class ProcessoControllerTest {
     // When
     when(service.buscarUmProcessoPorCdInteressado(TESTE_PARAMETRO_LONG)).thenReturn(listaDeProcessosOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(listaDeProcessosOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(listaDeProcessosOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
@@ -122,33 +122,33 @@ class ProcessoControllerTest {
     // When
     when(service.buscarUmProcessoPorCdAssunto(TESTE_PARAMETRO_LONG)).thenReturn(listaDeProcessosOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(listaDeProcessosOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(listaDeProcessosOutputString))
+            .andExpect(status().isOk());
   }
 
   @Test
   void atualizaProcessoDeveRetornarHttpNoContent () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = put(BASE_URL+"/id/"+TESTE_PARAMETRO_LONG)
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .content(processoInputString);
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(processoInputString);
     // When
     this.mockMvc.perform(request) // Then
-      .andExpect(status().isNoContent());
+            .andExpect(status().isNoContent());
   }
 
   @Test
   void deletaProcessoDeveRetornarProcessoOutputComoJsonEHttpOk () throws Exception {
     // Given
     MockHttpServletRequestBuilder request = delete(BASE_URL+"/id/"+TESTE_PARAMETRO_LONG)
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .content(processoInputString);
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(processoInputString);
     // When
     when(service.deletarProcesso(TESTE_PARAMETRO_LONG)).thenReturn(processoOutput);
     this.mockMvc.perform(request) // Then
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-      .andExpect(content().string(processoOutputString))
-      .andExpect(status().isOk());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string(processoOutputString))
+            .andExpect(status().isOk());
   }
 }
