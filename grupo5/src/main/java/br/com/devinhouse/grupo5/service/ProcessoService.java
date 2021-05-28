@@ -54,7 +54,7 @@ public class ProcessoService {
 		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
 		if (interessadoOut != null) {
 			if (FALSE.equals(interessadoOut.getFlAtivo())) {
-				throw new InativoException();
+				throw new InteressadoInativoException(interessadoOut.getId());
 			}
 			processo.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
 		} else {
@@ -66,7 +66,7 @@ public class ProcessoService {
 		AssuntoOutputDTO assuntoOut = assuntoService.buscarAssuntoPorId(processoInputDTO.getCdAssunto());
 		if (assuntoOut != null) {
 			if (FALSE.equals(assuntoOut.getFlAtivo())) {
-				throw new InativoException("O assunto informado encontra-se inativo no momento.");
+				throw new AssuntoInativoException(assuntoOut.getId());
 			}
 			processo.setCdAssunto(modelMapper.map(assuntoOut, Assunto.class));
 		} else {
@@ -136,7 +136,7 @@ public class ProcessoService {
 		InteressadoOutputDTO interessadoOut = interessadoService.buscarInteressadoPeloId(processoInputDTO.getCdInteressado());
 		if (interessadoOut != null) {
 			if (FALSE.equals(interessadoOut.getFlAtivo())) {
-				throw new InativoException();
+				throw new InteressadoInativoException(interessadoOut.getId());
 			}
 			processoAtualizado.setCdInteressado(modelMapper.map(interessadoOut, Interessado.class));
 		} else {
@@ -148,14 +148,13 @@ public class ProcessoService {
 		AssuntoOutputDTO assuntoOut = assuntoService.buscarAssuntoPorId(processoInputDTO.getCdAssunto());
 		if (assuntoOut != null) {
 			if (FALSE.equals(assuntoOut.getFlAtivo())) {
-				throw new InativoException("O assunto informado encontra-se inativo no momento.");
+				throw new AssuntoInativoException(assuntoOut.getId());
 			}
 			processoAtualizado.setCdAssunto(modelMapper.map(assuntoOut, Assunto.class));
 		} else {
 			throw new AssuntoNaoEncontradoException();
 		}
 		BeanUtils.copyProperties(processoAtualizado, processoIndicado, "id");
-		// TODO: conferir se há alguma informação que deverá ser ignorada além de id
 		processoRepository.save(processoIndicado);
 	}
 

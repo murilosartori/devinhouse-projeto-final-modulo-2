@@ -129,7 +129,7 @@ class ProcessoServiceTest {
 		Throwable error = catchThrowable(() ->
 				processoService.salvarProcesso(processoInputDTO)
 		);
-		assertThat(error).isInstanceOf(InativoException.class);
+		assertThat(error).isInstanceOf(AssuntoInativoException.class);
 	}
 
 	@Test
@@ -180,7 +180,7 @@ class ProcessoServiceTest {
 		Throwable error = catchThrowable(() ->
 				processoService.salvarProcesso(processoInputDTO)
 		);
-		assertThat(error).isInstanceOf(InativoException.class);
+		assertThat(error).isInstanceOf(AssuntoInativoException.class);
 	}
 
 	@Test
@@ -310,7 +310,7 @@ class ProcessoServiceTest {
 				1L
 		);
 		Processo processo = new Processo(
-				Integer.parseInt(processoInputDTO.getNuProcesso().toString()),
+				processoInputDTO.getNuProcesso(),
 				processoInputDTO.getSgOrgaoSetor(),
 				processoInputDTO.getNuAno(),
 				processoInputDTO.getDescricao(),
