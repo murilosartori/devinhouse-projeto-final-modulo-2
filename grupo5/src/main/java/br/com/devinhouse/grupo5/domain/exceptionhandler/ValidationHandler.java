@@ -52,6 +52,16 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
+  @ExceptionHandler(AssuntoInativoException.class)
+  public ResponseEntity<Object> assuntoInativoHandler(AssuntoInativoException ex, WebRequest webRequest) {
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(InteressadoInativoException.class)
+  public ResponseEntity<Object> interessadoInativoHandler(InteressadoInativoException ex, WebRequest webRequest) {
+    return exceptionSchema(ex, webRequest, BAD_REQUEST);
+  }
+
   @ExceptionHandler(ProcessoNaoEncontradoException.class)
   public ResponseEntity<Object> pessoaNaoEncontradaHandler(ProcessoNaoEncontradoException ex, WebRequest webRequest) {
     return exceptionSchema(ex, webRequest, NOT_FOUND);

@@ -129,7 +129,7 @@ class ProcessoServiceTest {
 		Throwable error = catchThrowable(() ->
 				processoService.salvarProcesso(processoInputDTO)
 		);
-		assertThat(error).isInstanceOf(InativoException.class);
+		assertThat(error).isInstanceOf(AssuntoInativoException.class);
 	}
 
 	@Test
@@ -180,7 +180,7 @@ class ProcessoServiceTest {
 		Throwable error = catchThrowable(() ->
 				processoService.salvarProcesso(processoInputDTO)
 		);
-		assertThat(error).isInstanceOf(InativoException.class);
+		assertThat(error).isInstanceOf(AssuntoInativoException.class);
 	}
 
 	@Test
