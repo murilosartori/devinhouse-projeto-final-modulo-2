@@ -81,11 +81,6 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     return exceptionSchema(ex, webRequest, NOT_FOUND);
   }
 
-  @ExceptionHandler(InformacaoJaCadastradaException.class)
-  public ResponseEntity<Object> informacaoJaCadastradaException(InformacaoJaCadastradaException ex, WebRequest webRequest){
-    return exceptionSchema(ex, webRequest, BAD_REQUEST);
-  }
-
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<Object> constraintViolationException(ConstraintViolationException ex, WebRequest webRequest){
     return exceptionSchema(ex, webRequest, BAD_REQUEST);

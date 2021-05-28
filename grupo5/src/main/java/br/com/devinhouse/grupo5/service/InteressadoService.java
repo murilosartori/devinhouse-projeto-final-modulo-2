@@ -1,9 +1,6 @@
 package br.com.devinhouse.grupo5.service;
 
-import br.com.devinhouse.grupo5.domain.exceptions.CpfInvalidoException;
-import br.com.devinhouse.grupo5.domain.exceptions.DataDeNascimentoInvalidaException;
-import br.com.devinhouse.grupo5.domain.exceptions.InformacaoJaCadastradaException;
-import br.com.devinhouse.grupo5.domain.exceptions.InteressadoNaoEncontradoException;
+import br.com.devinhouse.grupo5.domain.exceptions.*;
 import br.com.devinhouse.grupo5.dto.InteressadoInputDTO;
 import br.com.devinhouse.grupo5.dto.InteressadoOutputDTO;
 import br.com.devinhouse.grupo5.model.Interessado;
@@ -38,7 +35,7 @@ public class InteressadoService {
     }
 
     if (interessadoRepository.findByNuIdentificacao(novoInteressado.getNuIdentificacao()).isPresent()) {
-      throw new InformacaoJaCadastradaException("Há um interessado cadastrado com a mesma identificação.");
+      throw new CpfJaExistenteException("Há um interessado cadastrado com a mesma identificação.");
     }
 
     return toDTO(interessadoRepository.save(toInteressado(novoInteressado)));
