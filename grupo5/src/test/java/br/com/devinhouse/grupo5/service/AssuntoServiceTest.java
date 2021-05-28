@@ -36,7 +36,7 @@ class AssuntoServiceTest {
     // Given
     AssuntoInputDTO assuntoInputDTO = new AssuntoInputDTO(
             "Teste unitário",
-           LocalDate.parse("2021-05-26"),
+            LocalDate.parse("2021-05-26"),
             true
     );
 
@@ -61,9 +61,9 @@ class AssuntoServiceTest {
     AssuntoOutputDTO expected = assuntoService.cadastrarAssunto(assuntoInputDTO);
 
     assertThat(expected) // Then
-      .isInstanceOf(AssuntoOutputDTO.class);
+            .isInstanceOf(AssuntoOutputDTO.class);
     verify(assuntoRepository, times(1))
-      .save(assunto);
+            .save(assunto);
   }
 
   @Test
@@ -85,11 +85,11 @@ class AssuntoServiceTest {
     );
     when(assuntoRepository.findById(any())).thenReturn(Optional.of(assunto));
     when(modelMapper.map(assunto, AssuntoOutputDTO.class))
-      .thenReturn(new AssuntoOutputDTO());
+            .thenReturn(new AssuntoOutputDTO());
     // When
     assertThat(assuntoService.buscarAssuntoPorId(assunto.getId())) // Then
-      .isInstanceOf(AssuntoOutputDTO.class);
+            .isInstanceOf(AssuntoOutputDTO.class);
     verify(assuntoRepository, times(1))
-      .findById(assunto.getId());
+            .findById(assunto.getId());
   }
 }

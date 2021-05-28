@@ -1,6 +1,5 @@
 package br.com.devinhouse.grupo5.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

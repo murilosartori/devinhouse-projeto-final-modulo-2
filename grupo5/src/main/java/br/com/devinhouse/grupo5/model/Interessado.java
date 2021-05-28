@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,15 +25,21 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @Table(name = "Interessado")
 public class Interessado {
+
+	@NotNull
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	@Column(length = 250, nullable = false)
+	@NotNull
+	@Column(length = 250)
 	private String nmInteressado;
-	@Column(length = 50, nullable = false)
+	@NotNull
+	@Column(length = 50)
 	private String nuIdentificacao;
-	@Column(nullable = false)
+	@NotNull
+	@Column
 	private LocalDate dtNascimento;
-	@Column(nullable = false)
+	@NotNull
+	@Column
 	private Boolean flAtivo;
 }

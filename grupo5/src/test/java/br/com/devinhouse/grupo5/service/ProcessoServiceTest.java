@@ -310,7 +310,7 @@ class ProcessoServiceTest {
 				1L
 		);
 		Processo processo = new Processo(
-				Integer.parseInt(processoInputDTO.getNuProcesso().toString()),
+				processoInputDTO.getNuProcesso(),
 				processoInputDTO.getSgOrgaoSetor(),
 				processoInputDTO.getNuAno(),
 				processoInputDTO.getDescricao(),
